@@ -19,36 +19,25 @@
         <div class="scanner-container">
             <h1 class="scanner-title">Scan Your Ticket</h1>
             <p class="scanner-instructions">Align the QR Code within the scanner to verify your entry.</p>
-            
-            <!-- Container for the QR reader -->
             <div id="reader" class="qr-reader"></div>
-            
-            <!-- Feedback text for scanning status -->
             <p id="scan-feedback" class="feedback">Awaiting scan...</p>
-
-            <!-- Container for showing name + status -->
-            <div id="name-status-container" style="display: none;">
-                <p><strong>Name:</strong> <span id="scanned-name"></span></p>
-                <p><strong>Status:</strong> <span id="scanned-status"></span></p>
-            </div>
-
-            <!-- Button to accept the scanned QR code (Släpp In) -->
-            <button id="accept-button" style="display: none;">Släpp In</button>
-
-            <!-- Camera control buttons -->
             <div class="scanner-buttons">
                 <button id="toggle-camera" class="control-button">Turn Off Camera</button>
                 <button id="switch-camera" class="control-button">Switch Camera</button>
             </div>
-            
-            <!-- Scan history section -->
+            <div id="name-status-container" style="display: none;">
+                <h3>Scanned Information</h3>
+                <p>Name: <span id="scanned-name"></span></p>
+                <p>Status: <span id="scanned-status"></span></p>
+                <button id="accept-button" style="display: none;">Släpp In</button>
+            </div>
             <div id="history-container" class="history-widget">
                 <h3>Scan History</h3>
                 <ul id="history-list"></ul>
                 <button id="clear-history" class="control-button">Clear History</button>
             </div>
         </div>
-    </main>
+    </main>    
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.7/html5-qrcode.min.js"></script>
     <script src="admin.js"></script>
