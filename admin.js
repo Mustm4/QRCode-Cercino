@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const checkQRCodeStatus = (paymentSessionId) => {
-        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/proxy/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
+        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=cs_test_a1E1MBTBHSJd4q5bH8c01RpotoNBOhSkF8oqieBuNOGkobS44dLa4eBrrL&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
 
         fetch(apiUrl)
             .then(response => response.json())
