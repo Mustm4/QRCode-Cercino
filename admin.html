@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="auth.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">NightClubX</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="#help">Help</a>
+        </div>
+    </nav>
+    <main class="scanner-page">
+        <div class="scanner-container">
+            <h1 class="scanner-title">Scan Your Ticket</h1>
+            <p class="scanner-instructions">Align the QR Code within the scanner to verify your entry.</p>
+            <div id="reader" class="qr-reader"></div>
+            <p id="scan-feedback" class="feedback">Awaiting scan...</p>
+            <div class="scanner-buttons">
+                <button id="toggle-camera" class="control-button">Turn Off Camera</button>
+                <button id="switch-camera" class="control-button">Switch Camera</button>
+            </div>
+            <div id="history-container" class="history-widget">
+                <h3>Scan History</h3>
+                <ul id="history-list"></ul>
+                <button id="clear-history" class="control-button">Clear History</button>
+            </div>
+        </div>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.7/html5-qrcode.min.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #242424;
+    padding: 1rem 2rem;
+}
+
+.navbar .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.nav-links a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1rem;
+    margin-left: 1rem;
+}
+
+/* Scanner Page */
+.scanner-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    padding: 2rem;
+}
+
+.scanner-container {
+    background-color: #1e1e1e;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.lockscreen-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #121212;
+    color: #ffffff;
+}
+
+.lockscreen-container {
+    background-color: #1e1e1e;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+}
+
+.lockscreen-container h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+.lockscreen-container p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: #cccccc;
+}
+
+#password-input {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+}
+
+.control-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #1e90ff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.control-button:hover {
+    background-color: #0077cc;
+}
+
+.error-message {
+    font-size: 0.9rem;
+    color: red;
+    margin-top: 1rem;
+}
+
+
+/* History Widget */
+.history-widget {
+    background-color: #292929;
+    padding: 1rem;
+    border-radius: 5px;
+    margin-top: 1rem;
+    color: #ffffff;
+}
+
+.history-widget ul {
+    list-style: none;
+    padding: 0;
+}
+
+.history-widget ul li {
+    margin-bottom: 0.5rem;
+}
+
+/* Overlay for Accept/Decline buttons */
+.qr-actions-overlay {
+    position: absolute;
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%);
+    display: none; /* Hide by default */
+    flex-direction: row;
+    gap: 1rem;
+    z-index: 2; /* Ensure it's above other elements */
+}
+
+.qr-actions-overlay button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #ffffff;
+    transition: background-color 0.3s ease;
+}
+
+.qr-actions-overlay .accept {
+    background-color: #28a745;
+}
+
+.qr-actions-overlay .accept:hover {
+    background-color: #218838;
+}
+
+.qr-actions-overlay .decline {
+    background-color: #dc3545;
+}
+
+.qr-actions-overlay .decline:hover {
+    background-color: #c82333;
+}
+
