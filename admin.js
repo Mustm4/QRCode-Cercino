@@ -46,13 +46,22 @@ document.addEventListener("DOMContentLoaded", () => {
         const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}`;
 
         fetch(apiUrl)
-            .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`API svarade med statuskod ${response.status}`);
+                }
+                return response.text(); // Hämta svaret som text
+            })
             .then(data => {
-                console.log(data);
+                console.log("API-svar:", data);
+
+                const [statusText, nameText] = data.split(",kund: ");
+                const status = statusText.replace("Status: ", "").trim();
+                const name = nameText ? nameText.trim() : "Okänd";
 
                 // Update name and status
-                scannedName.textContent = data.name || "Unknown";
-                scannedStatus.textContent = data.status;
+                scannedName.textContent = name;
+                scannedStatus.textContent = status;
 
                 // Show name and status
                 nameStatusContainer.style.display = "block";
@@ -64,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 isScanningCompleted = true;
             })
             .catch((error) => {
-                console.error(`Error:`, error);
+                console.error("Fel vid hämtning av QR-kodens status:", error);
                 feedback.textContent = "Kunde inte hämta status från servern.";
                 feedback.style.color = "red";
             });
