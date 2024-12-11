@@ -43,9 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const checkQRCodeStatus = (paymentSessionId) => {
-        // Fetch function key from environment variables or hardcoded if necessary
-        const functionKey = "YOUR_FUNCTION_API_KEY"; // This should be securely managed
-        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}&code=${functionKey}`;
+        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}`;
 
         fetch(apiUrl)
             .then(response => response.json())
