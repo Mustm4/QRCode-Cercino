@@ -4,6 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const switchCameraButton = document.getElementById("switch-camera");
     const historyList = document.getElementById("history-list");
     const clearHistoryButton = document.getElementById("clear-history");
+    const nameElement = document.createElement("p");
+    const statusElement = document.createElement("p");
+    const infoContainer = document.createElement("div");
+    infoContainer.appendChild(nameElement);
+    infoContainer.appendChild(statusElement);
+    document.body.appendChild(infoContainer);
+    
 
     let html5QrCode = new Html5Qrcode("reader");
     let isCameraActive = true;
@@ -34,24 +41,25 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    const checkQRCodeStatus = (paymentSessionId) =>
-    {
+    const checkQRCodeStatus = (paymentSessionId) => {
         const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}`;
 
-        fetch(apiUrl)
+        fetch(apiUrl) 
             .then(response => response.json())
-            .then(data => 
-            {
+            .then(data => {
                 console.log(data);
 
-                const feedbackElement = document.getElementById("scan-feedback");
-                feedbackElement.textContent = `QR-kodens status: ${data.status}`;
-                feedbackElement.style.color = data.status === "Redan skannad" ? "red" : "green";
+                
+                feedback.textContent = `QR-kodens status: ${data.status}`;
+                feedback.style.color = data.status === "Redan skannad" ? "red" : "green";
+
+                
+                nameElement.textContent = `Name: ${data.name}`; 
+                statusElement.textContent = `Status: ${data.status}`; 
             })
-            .catch(Error => 
-            {
+            .catch(error => {
                 console.error(`Error:`, error);
-                feedback.textContent = "Kunde inte hämta status från servern.";
+                feedback.textContent = "Kunde inte hämta status från servern."; 
                 feedback.style.color = "red";
             });
     };
