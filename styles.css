@@ -174,3 +174,35 @@ body {
     background-color: #c82333;
 }
 
+/* Ny stilmall för Namn och Status */
+#name-status-container {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    color: #ffffff;
+    background-color: #333333;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Knappen Släpp In */
+#accept-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    background-color: #28a745;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#accept-button:hover {
+    background-color: #218838;
+}
+
+/* Justera den generella stilen för feedback texten */
+#scan-feedback {
+    font-size: 1.5rem;
+    color: #ffffff;
+    margin-top: 20px;
+}
