@@ -38,30 +38,23 @@ document.addEventListener("DOMContentLoaded", () => {
         // Stop the camera after a successful scan
         stopCamera();
 
-        // Check QR code status
+        // Check QR code status with function key
         checkQRCodeStatus(decodedText);
     };
 
     const checkQRCodeStatus = (paymentSessionId) => {
-        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}`;
+        // Fetch function key from environment variables or hardcoded if necessary
+        const functionKey = "YOUR_FUNCTION_API_KEY"; // This should be securely managed
+        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}&code=${functionKey}`;
 
         fetch(apiUrl)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`API svarade med statuskod ${response.status}`);
-                }
-                return response.text(); // Hämta svaret som text
-            })
+            .then(response => response.json())
             .then(data => {
-                console.log("API-svar:", data);
-
-                const [statusText, nameText] = data.split(",kund: ");
-                const status = statusText.replace("Status: ", "").trim();
-                const name = nameText ? nameText.trim() : "Okänd";
+                console.log(data);
 
                 // Update name and status
-                scannedName.textContent = name;
-                scannedStatus.textContent = status;
+                scannedName.textContent = data.name || "Unknown";
+                scannedStatus.textContent = data.status;
 
                 // Show name and status
                 nameStatusContainer.style.display = "block";
@@ -73,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 isScanningCompleted = true;
             })
             .catch((error) => {
-                console.error("Fel vid hämtning av QR-kodens status:", error);
+                console.error(`Error:`, error);
                 feedback.textContent = "Kunde inte hämta status från servern.";
                 feedback.style.color = "red";
             });
