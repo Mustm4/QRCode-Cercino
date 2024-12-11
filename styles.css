@@ -186,19 +186,20 @@ body {
 
 /* Knappen Släpp In */
 #accept-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 1.2rem;
     background-color: #28a745;
-    color: #ffffff;
+    color: white;
     border: none;
-    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
     cursor: pointer;
+    margin-top: 10px;
+    display: none; /* Hide initially */
 }
 
 #accept-button:hover {
     background-color: #218838;
 }
+
 
 /* Justera den generella stilen för feedback texten */
 #scan-feedback {
