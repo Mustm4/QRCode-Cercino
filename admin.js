@@ -139,14 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     });
 
-    // Clear the scan history
-    clearHistoryButton.addEventListener("click", () => {
-        historyList.innerHTML = ""; // Clear the displayed list
-        scannedCodes.clear(); // Clear the scanned codes set
-        feedback.textContent = "History cleared.";
-        feedback.style.color = "#ffffff";
-    });
-
     // Handle the "Släpp In" button click
     acceptButton.addEventListener("click", () => {
         // Hide the name/status and the accept button
