@@ -29,9 +29,33 @@ document.addEventListener("DOMContentLoaded", () => {
             const listItem = document.createElement("li");
             listItem.textContent = `${decodedText} (Scanned at: ${timestamp})`;
             historyList.appendChild(listItem);
+
+            checkQRCodeStatus(decodedText);
         }
     };
 
+    const checkQRCodeStatus = (paymentSessionId) =>
+    {
+        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}`;
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => 
+            {
+                console.log(data);
+
+                const feedbackElement = document.getElementById("scan-feedback");
+                feedbackElement.textContent = `QR-kodens status: ${data.status}`;
+                feedbackElement.style.color = data.status === "Redan skannad" ? "red" : "green";
+            })
+            .catch(Error => 
+            {
+                console.error(`Error:`, error);
+                feedback.textContent = "Kunde inte hämta status från servern.";
+                feedback.style.color = "red";
+            });
+    };
+    
     const onScanFailure = () => {
         feedback.textContent = "Scanning...";
         feedback.style.color = "#ffffff";
