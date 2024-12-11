@@ -4,17 +4,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const switchCameraButton = document.getElementById("switch-camera");
     const historyList = document.getElementById("history-list");
     const clearHistoryButton = document.getElementById("clear-history");
-    const nameElement = document.createElement("p");
-    const statusElement = document.createElement("p");
-    const infoContainer = document.createElement("div");
-    infoContainer.appendChild(nameElement);
-    infoContainer.appendChild(statusElement);
-    document.body.appendChild(infoContainer);
-    
+    const acceptButton = document.getElementById("accept-button");
+    const nameStatusContainer = document.getElementById("name-status-container");
+    const scannedName = document.getElementById("scanned-name");
+    const scannedStatus = document.getElementById("scanned-status");
 
     let html5QrCode = new Html5Qrcode("reader");
     let isCameraActive = true;
     let scannedCodes = new Set(); // To store unique scanned QR codes
+    let isScanningCompleted = false; // Flag to check if scanning is completed
 
     // Utility function to get current timestamp
     const getTimestamp = () => {
@@ -24,46 +22,54 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Function called when a QR code is successfully scanned
     const onScanSuccess = (decodedText) => {
-        if (scannedCodes.has(decodedText)) {
-            feedback.textContent = `Duplicate QR Code: ${decodedText}`;
-            feedback.style.color = "orange";
-        } else {
-            scannedCodes.add(decodedText); // Add the code to the set
-            feedback.textContent = `Accepted: ${decodedText}`;
-            feedback.style.color = "green";
-
-            const timestamp = getTimestamp();
-            const listItem = document.createElement("li");
-            listItem.textContent = `${decodedText} (Scanned at: ${timestamp})`;
-            historyList.appendChild(listItem);
-
-            checkQRCodeStatus(decodedText);
+        if (scannedCodes.has(decodedText) || isScanningCompleted) {
+            return; // Prevent duplicate scans and stop scanning once completed
         }
+
+        scannedCodes.add(decodedText); // Add the code to the set
+        feedback.textContent = `Accepted: ${decodedText}`;
+        feedback.style.color = "green";
+
+        const timestamp = getTimestamp();
+        const listItem = document.createElement("li");
+        listItem.textContent = `${decodedText} (Scanned at: ${timestamp})`;
+        historyList.appendChild(listItem);
+
+        // Stop the camera after a successful scan
+        stopCamera();
+
+        // Check QR code status
+        checkQRCodeStatus(decodedText);
     };
 
     const checkQRCodeStatus = (paymentSessionId) => {
         const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}`;
 
-        fetch(apiUrl) 
+        fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
                 console.log(data);
 
-                
-                feedback.textContent = `QR-kodens status: ${data.status}`;
-                feedback.style.color = data.status === "Redan skannad" ? "red" : "green";
+                // Update name and status
+                scannedName.textContent = data.name || "Unknown";
+                scannedStatus.textContent = data.status;
 
-                
-                nameElement.textContent = `Name: ${data.name}`; 
-                statusElement.textContent = `Status: ${data.status}`; 
+                // Show name and status
+                nameStatusContainer.style.display = "block";
+
+                // Show the accept button
+                acceptButton.style.display = "inline-block";
+
+                // Mark scanning as completed
+                isScanningCompleted = true;
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(`Error:`, error);
-                feedback.textContent = "Kunde inte hämta status från servern."; 
+                feedback.textContent = "Kunde inte hämta status från servern.";
                 feedback.style.color = "red";
             });
     };
-    
+
     const onScanFailure = () => {
         feedback.textContent = "Scanning...";
         feedback.style.color = "#ffffff";
@@ -76,6 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(() => {
                 isCameraActive = true;
                 toggleCameraButton.textContent = "Turn Off Camera";
+                isScanningCompleted = false; // Reset scanning completion flag
             })
             .catch((err) => {
                 feedback.textContent = "Failed to start camera.";
@@ -138,6 +145,30 @@ document.addEventListener("DOMContentLoaded", () => {
         scannedCodes.clear(); // Clear the scanned codes set
         feedback.textContent = "History cleared.";
         feedback.style.color = "#ffffff";
+    });
+
+    // Handle the "Släpp In" button click
+    acceptButton.addEventListener("click", () => {
+        // Hide the name/status and the accept button
+        nameStatusContainer.style.display = "none";
+        acceptButton.style.display = "none";
+
+        // Restart the camera
+        Html5Qrcode.getCameras()
+            .then((cameras) => {
+                if (cameras.length > 0) {
+                    currentCameraId = cameras[0].id;
+                    startCamera(currentCameraId);
+                } else {
+                    feedback.textContent = "No cameras found.";
+                    feedback.style.color = "red";
+                }
+            })
+            .catch((err) => {
+                feedback.textContent = "Failed to initialize cameras.";
+                feedback.style.color = "red";
+                console.error(err);
+            });
     });
 
     // Initialize the camera
