@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let isCameraActive = true;
     let scannedCodes = new Set(); // To store unique scanned QR codes
     let isScanningCompleted = false; // Flag to check if scanning is completed
+    let currentPaymentSessionId = null; // To store the current payment session ID
 
     // Utility function to get current timestamp
     const getTimestamp = () => {
@@ -43,23 +44,26 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const checkQRCodeStatus = (paymentSessionId) => {
-        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
-    
+        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}`;
+
         fetch(apiUrl)
-            .then(response => response.json()) // Parse the JSON response
+            .then(response => response.json())
             .then(data => {
                 console.log(data);
-    
+
                 // Update name and status
                 scannedName.textContent = data.name || "Unknown";
                 scannedStatus.textContent = data.status;
-    
+
                 // Show name and status
                 nameStatusContainer.style.display = "block";
-    
+
                 // Show the accept button
                 acceptButton.style.display = "inline-block";
-    
+
+                // Save the current payment session ID
+                currentPaymentSessionId = paymentSessionId;
+
                 // Mark scanning as completed
                 isScanningCompleted = true;
             })
@@ -103,6 +107,78 @@ document.addEventListener("DOMContentLoaded", () => {
                 feedback.textContent = "Failed to stop camera.";
                 feedback.style.color = "red";
                 console.error(err);
+            });
+    };
+
+    // Toggle camera state
+    toggleCameraButton.addEventListener("click", () => {
+        if (isCameraActive) {
+            stopCamera();
+        } else if (currentCameraId) {
+            startCamera(currentCameraId);
+        }
+    });
+
+    // Switch camera
+    switchCameraButton.addEventListener("click", () => {
+        Html5Qrcode.getCameras()
+            .then((cameras) => {
+                if (cameras.length > 1) {
+                    const isFrontCamera = currentCameraId === cameras[0].id;
+                    currentCameraId = isFrontCamera ? cameras[1].id : cameras[0].id;
+                    stopCamera();
+                    setTimeout(() => startCamera(currentCameraId), 500);
+                    switchCameraButton.textContent = isFrontCamera
+                        ? "Switch to Back Camera"
+                        : "Switch to Front Camera";
+                } else {
+                    feedback.textContent = "Only one camera detected.";
+                    feedback.style.color = "orange";
+                }
+            })
+            .catch((err) => {
+                feedback.textContent = "Failed to switch cameras.";
+                feedback.style.color = "red";
+                console.error(err);
+            });
+    });
+
+    // Handle the "Släpp In" button click
+    acceptButton.addEventListener("click", () => {
+        // Make sure the paymentSessionId is available before sending the request
+        if (!currentPaymentSessionId) {
+            feedback.textContent = "Ingen QR-kod skannad.";
+            feedback.style.color = "red";
+            return;
+        }
+
+        // Make the API call to update the QR code status
+        updateQRCodeStatus(currentPaymentSessionId, "Redan skannad");
+    });
+
+    const updateQRCodeStatus = (paymentSessionId, status) => {
+        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/UpdateQRCodeStatus?paymentSessionId=${paymentSessionId}&status=${status}`;
+
+        fetch(apiUrl, {
+            method: 'POST',
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Status updated:", data);
+                feedback.textContent = `Status uppdaterad till: ${status}`;
+                feedback.style.color = "green";
+
+                // Hide name and status, and hide the accept button
+                nameStatusContainer.style.display = "none";
+                acceptButton.style.display = "none";
+
+                // Restart camera
+                startCamera(currentCameraId);
+            })
+            .catch((error) => {
+                console.error(`Error:`, error);
+                feedback.textContent = "Kunde inte uppdatera status.";
+                feedback.style.color = "red";
             });
     };
 
