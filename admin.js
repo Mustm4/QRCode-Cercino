@@ -14,6 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let scannedCodes = new Set(); // To store unique scanned QR codes
     let isScanningCompleted = false; // Flag to check if scanning is completed
 
+    const functionKey = "FUNCTION_API_KEY"; // Add your Function Key here
+
     // Utility function to get current timestamp
     const getTimestamp = () => {
         const now = new Date();
@@ -43,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const checkQRCodeStatus = (paymentSessionId) => {
-        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}`;
+        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}&code=${functionKey}`;
 
         fetch(apiUrl)
             .then(response => response.json())
