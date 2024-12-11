@@ -43,23 +43,23 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const checkQRCodeStatus = (paymentSessionId) => {
-        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=cs_test_a1E1MBTBHSJd4q5bH8c01RpotoNBOhSkF8oqieBuNOGkobS44dLa4eBrrL&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
-
+        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
+    
         fetch(apiUrl)
-            .then(response => response.json())
+            .then(response => response.json()) // Parse the JSON response
             .then(data => {
                 console.log(data);
-
+    
                 // Update name and status
                 scannedName.textContent = data.name || "Unknown";
                 scannedStatus.textContent = data.status;
-
+    
                 // Show name and status
                 nameStatusContainer.style.display = "block";
-
+    
                 // Show the accept button
                 acceptButton.style.display = "inline-block";
-
+    
                 // Mark scanning as completed
                 isScanningCompleted = true;
             })
