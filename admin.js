@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const checkQRCodeStatus = (paymentSessionId) => {
-        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=cs_test_a1E1MBTBHSJd4q5bH8c01RpotoNBOhSkF8oqieBuNOGkobS44dLa4eBrrL&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
+        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}`;
 
         fetch(apiUrl)
             .then(response => response.json())
@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const updateQRCodeStatus = (paymentSessionId, status) => {
-        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/UpdateQRCodeStatus?paymentSessionId=${paymentSessionId}&status=${status}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
+        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/UpdateQRCodeStatus?paymentSessionId=${paymentSessionId}&status=${status}`;
 
         fetch(apiUrl, {
             method: 'POST',
@@ -167,6 +167,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log("Status updated:", data);
                 feedback.textContent = `Status uppdaterad till: ${status}`;
                 feedback.style.color = "green";
+
+                setTimeout(() => {
+                    feedback.textContent = "";
+                }, 3000);
 
                 // Hide name and status, and hide the accept button
                 nameStatusContainer.style.display = "none";
