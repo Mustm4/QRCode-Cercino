@@ -1,384 +1,222 @@
-/* General Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+document.addEventListener("DOMContentLoaded", () => {
+    const feedback = document.getElementById("scan-feedback");
+    const toggleCameraButton = document.getElementById("toggle-camera");
+    const switchCameraButton = document.getElementById("switch-camera");
+    const clearHistoryButton = document.getElementById("clear-history");
+    const acceptButton = document.getElementById("accept-button");
+    const nameStatusContainer = document.getElementById("name-status-container");
+    const scannedName = document.getElementById("scanned-name");
+    const scannedStatus = document.getElementById("scanned-status");
+    const guestList = document.getElementById("guest-list");
 
-/* Body Styling */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #121212;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 1)), url('party.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    color: #ffffff;
-    display: block;
-    flex-direction: column;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-}
+    let html5QrCode = new Html5Qrcode("reader");
+    let isCameraActive = true;
+    let scannedCodes = new Set(); // To store unique scanned QR codes
+    let isScanningCompleted = false; // Flag to check if scanning is completed
+    let currentPaymentSessionId = null; // To store the current payment session ID
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    body {
-        background-size: cover; 
-        background-position: center;
-    }
+    // Utility function to get current timestamp
+    const getTimestamp = () => {
+        const now = new Date();
+        return now.toLocaleString(); // Format: "MM/DD/YYYY, HH:MM:SS"
+    };
 
-    .main-content {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-grow: 1;
-        padding: 2rem; /* Reduced padding */
-        text-align: center;
-    }
+    // Function called when a QR code is successfully scanned
+    const onScanSuccess = (decodedText) => {
+        if (scannedCodes.has(decodedText) || isScanningCompleted) {
+            feedback.textContent = "Redan skannad eller skanning slutförd.";
+            feedback.style.color = "orange";
+            return;
+        }
 
-    .ticket-container {
-        padding: 2rem;
-        border-radius: 10px;
-        text-align: center;
-        width: 100%;
-        max-width: 400px;
-    }
+        scannedCodes.add(decodedText);
+        feedback.textContent = "Accepterad";
+        feedback.style.color = "green";
 
-    .ticket-container h1 {
-        font-size: 1.8rem;
-        margin-bottom: 1rem;
-        color: #ffffff;
-    }
+        const timestamp = getTimestamp();
+        const listItem = document.createElement("li");
+        listItem.textContent = `${decodedText} (Skannad: ${timestamp})`;
+        guestList.appendChild(listItem);
 
-    .ticket-container p {
-        font-size: 1rem;
-        margin-bottom: 1rem;
-        color: #cccccc;
-    }
+        checkQRCodeStatus(decodedText);
 
-    #reader {
-        margin-top: 0px;  /* Mindre margin för mindre enheter */
-        height: 50vh;
-    }
-}
+        acceptButton.style.display = "inline-block";
 
-@media (max-width: 480px) {
-    body {
-        height: auto; /* Adjust height for smaller screens */
-    }
+        stopCamera();
+    };
 
-    .main-content {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-grow: 1;
-        padding: 1.5rem; /* Reduced padding for smaller screens */
-        text-align: center; 
-    }
+    // Function to toggle guest list visibility
+    clearHistoryButton.addEventListener("click", () => {
+        if (guestListContainer.style.display === "none") {
+            guestListContainer.style.display = "block";
+        } else {
+            guestListContainer.style.display = "none";
+        }
+    });
 
-    .ticket-container {
-        padding: 1.5rem;
-        border-radius: 10px;
-        text-align: center;
-        width: 100%;
-        max-width: 350px; /* Slightly smaller max-width for small screens */
-    }
+    const checkQRCodeStatus = (paymentSessionId) => {
+        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
 
-    .ticket-container h1 {
-        font-size: 1.6rem; /* Adjusted font size */
-        margin-bottom: 1rem;
-        color: #ffffff;
-    }
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
 
-    .ticket-container p {
-        font-size: 0.9rem; /* Smaller font size */
-        margin-bottom: 1rem;
-        color: #cccccc;
-    }
+                // Update name and status
+                scannedName.textContent = data.name || "Unknown";
+                scannedStatus.textContent = data.status;
 
-    #reader {
-        margin-top: 0px;  /* Mindre margin för mindre enheter */
-        height: 50vh;
-    }
-}
+                // Show name and status
+                nameStatusContainer.style.display = "block";
 
-/* Navbar */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #242424;
-    padding: 1rem 2rem;
-    position: relative; /* Behåller navbaren i flödet */
-    z-index: 10; /* Se till att navbaren ligger ovanför kameran */
-}
+                // Show the accept button
+                acceptButton.style.display = "inline-block";
 
-.navbar .logo a {
-    text-decoration: none;
-    color: #ffffff;
-    font-size: 1.5rem;
-    font-weight: bold;
-}
+                // Save the current payment session ID
+                currentPaymentSessionId = paymentSessionId;
 
-.nav-links a {
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 1rem;
-    margin-left: 1rem;
-}
+                // Mark scanning as completed
+                isScanningCompleted = true;
+            })
+            .catch((error) => {
+                console.error(`Error:`, error);
+                feedback.textContent = "Kunde inte hämta status från servern.";
+                feedback.style.color = "red";
+            });
+    };
 
-/* Scanner Page */
-.scanner-page {
-    display: flex;
-    flex-direction: column; /* Ändra från row (default) till column */
-    align-items: center;   /* Centrera innehållet horisontellt */
-    padding: 20px;
-    gap: 20px;             /* Lägger till mellanrum mellan kameran och gästlistan */
-}
+    
 
-/* Camera Viewer */
-#reader {
-    width: 100vw;
-    height: 100%;
-}
+ // Start the camera
+ const startCamera = (cameraId) => {
+    const qrboxSize = window.innerWidth <= 480 ? 200 : 250;
+    const fps = window.innerWidth <= 480 ? 5 : 10; // Lägre FPS för små skärmar
 
-/* Overlay for Accept/Decline buttons */
-.qr-actions-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);  /* Center the overlay */
-    display: flex;  /* Flexbox for buttons */
-    gap: 1rem;
-    z-index: 2;  /* Ensure it’s above the camera */
-}
+    html5QrCode
+        .start(cameraId, { 
+            fps: fps, 
+            qrbox: { width: qrboxSize, height: qrboxSize }
+        }, onScanSuccess)
+        .then(() => {
+            isCameraActive = true;
+            toggleCameraButton.textContent = "Turn Off Camera";
+            isScanningCompleted = false;
+        })
+        .catch((err) => {
+            feedback.textContent = "Failed to start camera.";
+            feedback.style.color = "red";
+            console.error(err);
+        });
+};
 
-.qr-actions-overlay button {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    color: #ffffff;
-    transition: background-color 0.3s ease;
-}
 
-.qr-actions-overlay .accept {
-    background-color: #28a745;
-}
 
-.qr-actions-overlay .accept:hover {
-    background-color: #218838;
-}
 
-.qr-actions-overlay .decline {
-    background-color: #dc3545;
-}
+    // Stop the camera
+    const stopCamera = () => {
+        html5QrCode
+            .stop()
+            .then(() => {
+                isCameraActive = false;
+                toggleCameraButton.textContent = "Turn On Camera";
+            })
+            .catch((err) => {
+                feedback.textContent = "Failed to stop camera.";
+                feedback.style.color = "red";
+                console.error(err);
+            });
+    };
 
-.qr-actions-overlay .decline:hover {
-    background-color: #c82333;
-}
+    // Toggle camera state
+    toggleCameraButton.addEventListener("click", () => {
+        if (isCameraActive) {
+            stopCamera();
+        } else if (currentCameraId) {
+            startCamera(currentCameraId);
+        }
+    });
 
-/* Feedback Text */
-#scan-feedback {
-    position: relative;
-    margin-top: 10px;
-    font-size: 16px;
-    color: green;
-    text-align: center;
-}
+    // Switch camera
+    switchCameraButton.addEventListener("click", () => {
+        Html5Qrcode.getCameras()
+            .then((cameras) => {
+                if (cameras.length > 1) {
+                    const isFrontCamera = currentCameraId === cameras[0].id;
+                    currentCameraId = isFrontCamera ? cameras[1].id : cameras[0].id;
+                    stopCamera();
+                    setTimeout(() => startCamera(currentCameraId), 500);
+                    switchCameraButton.textContent = isFrontCamera
+                        ? "Switch to Back Camera"
+                        : "Switch to Front Camera";
+                } else {
+                    feedback.textContent = "Only one camera detected.";
+                    feedback.style.color = "orange";
+                }
+            })
+            .catch((err) => {
+                feedback.textContent = "Failed to switch cameras.";
+                feedback.style.color = "red";
+                console.error(err);
+            });
+    });
 
-/* History Widget */
-.history-widget {
-    background-color: #292929;
-    padding: 1rem;
-    border-radius: 5px;
-    margin-top: 1rem;
-    color: #ffffff;
-}
+    // Handle the "Släpp In" button click
+    acceptButton.addEventListener("click", () => {
+        // Make sure the paymentSessionId is available before sending the request
+        if (!currentPaymentSessionId) {
+            feedback.textContent = "Ingen QR-kod skannad.";
+            feedback.style.color = "red";
+            return;
+        }
 
-.history-widget ul {
-    list-style: none;
-    padding: 0;
-}
+        // Make the API call to update the QR code status
+        updateQRCodeStatus(currentPaymentSessionId, "Redan skannad");
+    });
 
-.history-widget ul li {
-    margin-bottom: 0.5rem;
-}
+    const updateQRCodeStatus = (paymentSessionId, status) => {
+        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/UpdateQRCodeStatus?paymentSessionId=${paymentSessionId}&status=${status}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
 
-/* Lock Screen */
-.lockscreen-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #121212;
-    color: #ffffff;
-}
+        fetch(apiUrl, {
+            method: 'POST',
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Status updated:", data);
+                feedback.textContent = `Status uppdaterad till: ${status}`;
+                feedback.style.color = "green";
 
-.lockscreen-container {
-    padding: 2rem;
-    border-radius: 10px;
-    text-align: center;
-    width: 100%;
-    max-width: 400px;
-}
+                setTimeout(() => {
+                    feedback.textContent = "";
+                }, 3000);
 
-.lockscreen-container h1 {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-    color: #ffffff;
-}
+                // Hide name and status, and hide the accept button
+                nameStatusContainer.style.display = "none";
+                acceptButton.style.display = "none";
 
-.lockscreen-container p {
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    color: #cccccc;
-}
+                // Restart camera
+                startCamera(currentCameraId);
+            })
+            .catch((error) => {
+                console.error(`Error:`, error);
+                feedback.textContent = "Kunde inte uppdatera status.";
+                feedback.style.color = "red";
+            });
+    };
 
-#password-input {
-    width: 100%;
-    padding: 0.75rem;
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 5px;
-    border: 1px solid #cccccc;
-}
-
-.bottom-buttons {
-    position: fixed; 
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    background-color: #242424; 
-    padding: 10px 0;
-    z-index: 1000; 
-}
-
-.bottom-buttons button {
-    flex: 1;
-    margin: 0 5px;
-    padding: 10px;
-    font-size: 1rem;
-    color: white;
-    background-color: #1e90ff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.back-button {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    color: #ffffff;
-    background-color: #1e90ff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.error-message {
-    font-size: 0.9rem;
-    color: red;
-    margin-top: 1rem;
-}
-
-/* Main content */
-.main-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-grow: 1;
-    padding: 2rem;
-}
-
-.ticket-container {
-    padding: 2rem;
-    border-radius: 10px;
-    text-align: center;
-    width: 100%;
-    max-width: 400px;
-}
-
-.ticket-container h1 {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-    color: #ffffff;
-}
-
-.ticket-container p {
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    color: #cccccc;
-}
-
-#orderid {
-    width: 100%;
-    padding: 0.75rem;
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 5px;
-    border: 1px solid #cccccc;
-}
-
-.form-button {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    color: #ffffff;
-    background-color: #1e90ff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#scanner-container {
-    margin-top: 20px;
-    text-align: center;
-    width: 100%;
-}
-
-#guest-list-container {
-    width: 100%;           /* Ta upp hela bredden av föräldern */
-    max-width: 600px;      /* Begränsa bredden för stora skärmar */
-    background-color: #333;
-    padding: 15px;
-}
-
-#guest-list-container h3 {
-    margin-top: 0;
-    text-align: center;
-    font-size: 18px;
-    color: white;
-}
-
-#guest-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    max-height: 200px;
-    overflow-y: auto;
-    font-size: 14px;
-}
-
-#guest-list li {
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
-}
-
-#guest-list li:last-child {
-    border-bottom: none;
-}
-
-#name-status-container {
-    margin-top: 20px;
-    text-align: center;
-}
-
-#name-status-container p {
-    font-size: 16px;
-} 
+    // Initialize the camera
+    Html5Qrcode.getCameras()
+        .then((cameras) => {
+            if (cameras.length > 0) {
+                currentCameraId = cameras[0].id;
+                startCamera(currentCameraId);
+            } else {
+                feedback.textContent = "No cameras found.";
+                feedback.style.color = "red";
+            }
+        })
+        .catch((err) => {
+            feedback.textContent = "Failed to initialize cameras.";
+            feedback.style.color = "red";
+            console.error(err);
+        });
+});
