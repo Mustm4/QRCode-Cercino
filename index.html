@@ -8,7 +8,9 @@
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">NightClubX</div>
+        <div class="logo">
+            <a href="index.html">NightClubX</a>
+        </div>
         <div class="nav-links">
             <a href="lockscreen.html">Admin</a>
             <a href="#help">Help</a>
@@ -19,10 +21,12 @@
             <h1>Retrieve Your Ticket</h1>
             <p class="instructions">Enter the Order ID below to retrieve your ticket.</p>
             <form class="ticket-form">
-                <label for="orderid">Order ID:</label>
-                <input type="text" id="orderid" name="orderid" required>
+                <input type="text" id="orderid" name="orderid" placeholder="Enter ID" required>
                 <button type="submit" class="form-button">Get My Ticket</button>
             </form>
+            <div id="qr-code-result">
+                
+            </div>
         </div>
     </main>
     <footer class="footer">
