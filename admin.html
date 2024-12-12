@@ -10,7 +10,7 @@
 <body>
     <nav class="navbar">
         <div class="logo">
-            <a href="index.html">NightClubX</a>
+            <a href="index.html">Cercino</a>
         </div>
         <div class="nav-links">
             <a href="index.html">Home</a>
@@ -19,26 +19,29 @@
     </nav>
     <main class="scanner-page">
         <div class="scanner-container">
-            <h1 class="scanner-title">Scan Your Ticket</h1>
-            <p class="scanner-instructions">Align the QR Code within the scanner to verify your entry.</p>
             <div id="reader" class="qr-reader"></div>
             <p id="scan-feedback" class="feedback">Awaiting scan...</p>
-            <div class="scanner-buttons">
+            <div class="bottom-buttons">
                 <button id="toggle-camera" class="control-button">Turn Off Camera</button>
                 <button id="switch-camera" class="control-button">Switch Camera</button>
+                <button id="clear-history" class="control-button">Export Guest List</button>
             </div>
             <div id="name-status-container" style="display: none;">
                 <p id="scanned-name">Namn: </p>
                 <p id="scanned-status">Status: </p>
             </div>
             <button id="accept-button" style="display: none;">Släpp In</button>
-            
-            <div id="history-container" class="history-widget">
-                <h3>Scan History</h3>
-                <ul id="history-list"></ul>
-                <button id="clear-history" class="control-button">Clear History</button>
-            </div>
         </div>
+        <div id="guest-list-container">
+            <h3>Gästlista</h3>
+            <ul id="guest-list"></ul>
+        </div>
+        
+        <div id="name-status-container" style="display: none;">
+            <p><strong>Namn:</strong> <span id="scanned-name"></span></p>
+            <p><strong>Status:</strong> <span id="scanned-status"></span></p>
+            <button id="accept-button" style="display: none;">Acceptera</button>
+        </div>       
     </main>    
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.7/html5-qrcode.min.js"></script>
