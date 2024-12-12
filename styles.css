@@ -24,10 +24,11 @@ body {
     padding: 1rem 2rem;
 }
 
-.navbar .logo {
+.navbar .logo a {
+    text-decoration: none;
+    color: #ffffff;
     font-size: 1.5rem;
     font-weight: bold;
-    color: #ffffff;
 }
 
 .nav-links a {
@@ -47,13 +48,11 @@ body {
 }
 
 .scanner-container {
-    background-color: #1e1e1e;
     padding: 2rem;
     border-radius: 10px;
     width: 100%;
     max-width: 400px;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .lockscreen-page {
@@ -66,11 +65,9 @@ body {
 }
 
 .lockscreen-container {
-    background-color: #1e1e1e;
     padding: 2rem;
     border-radius: 10px;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     width: 100%;
     max-width: 400px;
 }
@@ -206,4 +203,52 @@ body {
     font-size: 1.5rem;
     color: #ffffff;
     margin-top: 20px;
+}
+
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    padding: 20rem;
+}
+
+.ticket-container {
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.ticket-container h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+.ticket-container p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: #cccccc;
+}
+
+#orderid {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+}
+
+.form-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #1e90ff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
