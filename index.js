@@ -8,7 +8,7 @@ document.querySelector('.ticket-form').addEventListener('submit', async (event) 
     resultDiv.innerHTML = '';
 
     try {
-        const response = await fetch(`https://your-api-url.azurewebsites.net/api/GetQRCodeImage?orderId=${orderId}`);
+        const response = await fetch(`https://stripewebhook-function.azurewebsites.net/api/GetQRCodeImage?orderId=${orderId}`);
         if (response.ok) {
             const data = await response.json();
             const imageUrl = data.imageUrl; // URL to the QR code image
