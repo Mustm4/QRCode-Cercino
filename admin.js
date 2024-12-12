@@ -39,6 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
         guestList.appendChild(listItem);
 
         checkQRCodeStatus(decodedText);
+
+        stopCamera();
     };
 
     // Function to toggle guest list visibility
