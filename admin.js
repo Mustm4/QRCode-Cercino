@@ -2,12 +2,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const feedback = document.getElementById("scan-feedback");
     const toggleCameraButton = document.getElementById("toggle-camera");
     const switchCameraButton = document.getElementById("switch-camera");
-    const historyList = document.getElementById("history-list");
     const clearHistoryButton = document.getElementById("clear-history");
     const acceptButton = document.getElementById("accept-button");
     const nameStatusContainer = document.getElementById("name-status-container");
     const scannedName = document.getElementById("scanned-name");
     const scannedStatus = document.getElementById("scanned-status");
+    const guestList = document.getElementById("guest-list");
 
     let html5QrCode = new Html5Qrcode("reader");
     let isCameraActive = true;
@@ -24,24 +24,31 @@ document.addEventListener("DOMContentLoaded", () => {
     // Function called when a QR code is successfully scanned
     const onScanSuccess = (decodedText) => {
         if (scannedCodes.has(decodedText) || isScanningCompleted) {
-            return; // Prevent duplicate scans and stop scanning once completed
+            feedback.textContent = "Redan skannad eller skanning slutförd.";
+            feedback.style.color = "orange";
+            return;
         }
 
-        scannedCodes.add(decodedText); // Add the code to the set
-        feedback.textContent = `Accepted: ${decodedText}`;
+        scannedCodes.add(decodedText);
+        feedback.textContent = "Accepterad: " + decodedText;
         feedback.style.color = "green";
 
         const timestamp = getTimestamp();
         const listItem = document.createElement("li");
-        listItem.textContent = `${decodedText} (Scanned at: ${timestamp})`;
-        historyList.appendChild(listItem);
+        listItem.textContent = `${decodedText} (Skannad: ${timestamp})`;
+        guestList.appendChild(listItem);
 
-        // Stop the camera after a successful scan
-        stopCamera();
-
-        // Check QR code status
         checkQRCodeStatus(decodedText);
     };
+
+    // Function to toggle guest list visibility
+    clearHistoryButton.addEventListener("click", () => {
+        if (guestListContainer.style.display === "none") {
+            guestListContainer.style.display = "block";
+        } else {
+            guestListContainer.style.display = "none";
+        }
+    });
 
     const checkQRCodeStatus = (paymentSessionId) => {
         const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
@@ -74,26 +81,32 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     };
 
-    const onScanFailure = () => {
-        feedback.textContent = "Scanning...";
-        feedback.style.color = "#ffffff";
-    };
+    
 
-    // Start the camera
-    const startCamera = (cameraId) => {
-        html5QrCode
-            .start(cameraId, { fps: 10, qrbox: { width: 250, height: 250 } }, onScanSuccess, onScanFailure)
-            .then(() => {
-                isCameraActive = true;
-                toggleCameraButton.textContent = "Turn Off Camera";
-                isScanningCompleted = false; // Reset scanning completion flag
-            })
-            .catch((err) => {
-                feedback.textContent = "Failed to start camera.";
-                feedback.style.color = "red";
-                console.error(err);
-            });
-    };
+ // Start the camera
+ const startCamera = (cameraId) => {
+    const qrboxSize = window.innerWidth <= 480 ? 200 : 250;
+    const fps = window.innerWidth <= 480 ? 5 : 10; // Lägre FPS för små skärmar
+
+    html5QrCode
+        .start(cameraId, { 
+            fps: fps, 
+            qrbox: { width: qrboxSize, height: qrboxSize }
+        }, onScanSuccess)
+        .then(() => {
+            isCameraActive = true;
+            toggleCameraButton.textContent = "Turn Off Camera";
+            isScanningCompleted = false;
+        })
+        .catch((err) => {
+            feedback.textContent = "Failed to start camera.";
+            feedback.style.color = "red";
+            console.error(err);
+        });
+};
+
+
+
 
     // Stop the camera
     const stopCamera = () => {
