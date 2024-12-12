@@ -19,7 +19,6 @@ body {
     min-height: 100vh;
     margin: 0;
     padding: 0;
-    padding-bottom: 80px;
 }
 
 /* Responsive Design */
