@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         scannedCodes.add(decodedText);
-        feedback.textContent = "Accepterad: " + decodedText;
+        feedback.textContent = "Accepterad";
         feedback.style.color = "green";
 
         const timestamp = getTimestamp();
@@ -39,6 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
         guestList.appendChild(listItem);
 
         checkQRCodeStatus(decodedText);
+
+        acceptButton.style.display = "inline-block";
 
         stopCamera();
     };
