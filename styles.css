@@ -297,8 +297,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     flex-grow: 1;
     padding: 2rem;
+    min-height: 100vh;
 }
 
 .ticket-container {
@@ -307,7 +309,10 @@ body {
     text-align: center;
     width: 100%;
     max-width: 400px;
+    max-height: 80vh; /* Sätt en maximal höjd för ticket-container */
+    overflow-y: auto; /* Gör att innehållet kan scrollas om det är för stort */
 }
+
 
 .ticket-container h1 {
     font-size: 1.8rem;
