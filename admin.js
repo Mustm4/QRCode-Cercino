@@ -55,6 +55,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 scannedStatus.textContent = data.status;
                 // Show name and status
                 nameStatusContainer.style.display = "block";
+
+                if (data.status === "Redan skannad") 
+                    {
+                        feedback.textContent = "Redan skannad eller skanning slutförd.";
+                        feedback.style.color = "orange";
+                        acceptButton.style.display = "none";
+                        return;
+                    }
                 // Show the accept button
                 acceptButton.style.display = "inline-block";
                 // Save the current payment session ID
