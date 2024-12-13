@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const timestamp = getTimestamp();
         const listItem = document.createElement("li");
-        listItem.textContent = ${decodedText} (Skannad: ${timestamp});
+        listItem.textContent = `${decodedText} (Skannad: ${timestamp})`;
         guestList.appendChild(listItem);
 
         checkQRCodeStatus(decodedText);
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const checkQRCodeStatus = (paymentSessionId) => {
-        const apiUrl = https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==;
+        const apiUrl = "https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==";
 
         fetch(apiUrl)
             .then(response => response.json())
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 isScanningCompleted = true;
             })
             .catch((error) => {
-                console.error(Error:, error);
+                console.error("Error:", error);
                 feedback.textContent = "Kunde inte hämta status från servern.";
                 feedback.style.color = "red";
             });
@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const updateQRCodeStatus = (paymentSessionId, status) => {
-        const apiUrl = https://stripewebhook-function.azurewebsites.net/api/UpdateQRCodeStatus?paymentSessionId=${paymentSessionId}&status=${status}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==;
+        const apiUrl = "https://stripewebhook-function.azurewebsites.net/api/UpdateQRCodeStatus?paymentSessionId=${paymentSessionId}&status=${status}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==";
 
         fetch(apiUrl, {
             method: 'POST',
@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(response => response.json())
             .then(data => {
                 console.log("Status updated:", data);
-                feedback.textContent = Status uppdaterad till: ${status};
+                feedback.textContent = `Status uppdaterad till: ${status}`;
                 feedback.style.color = "green";
 
                 setTimeout(() => {
@@ -204,7 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 startCamera(currentCameraId);
             })
             .catch((error) => {
-                console.error(Error:, error);
+                console.error("Error:", error);
                 feedback.textContent = "Kunde inte uppdatera status.";
                 feedback.style.color = "red";
             });
