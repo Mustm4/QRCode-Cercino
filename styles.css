@@ -393,17 +393,17 @@ body {
 
 /* När QR-koden visas, se till att visa resultatet i mitten */
 #qr-code-result {
-    display: fixed;
-    justify-content: center;
+    position: fixed; /* Fixera QR-koden på skärmen */
+    top: 50%; /* Vertikal centrerad */
+    left: 50%; /* Horisontell centrerad */
+    transform: translate(-50%, -50%); /* Justera så att den verkligen är centrerad */
+    z-index: 10; /* Säkerställ att den ligger ovanpå andra element */
+    width: 80%; /* Bestäm en maxbredd */
+    max-width: 500px; /* Begränsa maxbredden */
+    height: auto; /* Behåll proportionerna för bilden */
+    display: flex;
+    justify-content: center; /* Se till att bilden är centrerad */
     align-items: center;
-    width: 100%;
-    height: 100vh;
-    opacity: 1;
-    transition: opacity 0.5s ease-in-out;
-    position: fixed; /* Se till att den ligger överallt annat */
-    top: 0;
-    left: 0;
-    z-index: 10; /* Så att den ligger över andra element */
 }
 
 #qr-code-result img {
