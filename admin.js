@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const checkQRCodeStatus = (paymentSessionId) => {
-        const apiUrl = "https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==";
+        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
 
         fetch(apiUrl)
             .then(response => response.json())
@@ -86,13 +86,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 isScanningCompleted = true;
             })
             .catch((error) => {
-                console.error("Error:", error);
+                console.error(`Error:`, error);
                 feedback.textContent = "Kunde inte hämta status från servern.";
                 feedback.style.color = "red";
             });
     };
 
-    
+
 
  // Start the camera
  const startCamera = (cameraId) => {
@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const updateQRCodeStatus = (paymentSessionId, status) => {
-        const apiUrl = "https://stripewebhook-function.azurewebsites.net/api/UpdateQRCodeStatus?paymentSessionId=${paymentSessionId}&status=${status}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==";
+        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/UpdateQRCodeStatus?paymentSessionId=${paymentSessionId}&status=${status}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
 
         fetch(apiUrl, {
             method: 'POST',
@@ -204,7 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 startCamera(currentCameraId);
             })
             .catch((error) => {
-                console.error("Error:", error);
+                console.error(`Error:`, error);
                 feedback.textContent = "Kunde inte uppdatera status.";
                 feedback.style.color = "red";
             });
@@ -226,4 +226,4 @@ document.addEventListener("DOMContentLoaded", () => {
             feedback.style.color = "red";
             console.error(err);
         });
-});
+    });
