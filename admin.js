@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const checkQRCodeStatus = (paymentSessionId) => {
         const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
         fetch(apiUrl)
-            .then(response => response.json())
+        .then(response => response.json())
             .then(data => {
                 console.log(data);
                 // Update name and status
