@@ -62,6 +62,11 @@ body {
         margin-top: 0px;  /* Mindre margin för mindre enheter */
         height: 50vh;
     }
+
+    button {
+        width: 100%;
+        padding: 1rem;  /* Adjust button size for smaller screens */
+    }
 }
 
 @media (max-width: 480px) {
@@ -144,41 +149,44 @@ body {
     height: 100%;
 }
 
-/* Overlay for Accept/Decline buttons */
-.qr-actions-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);  /* Center the overlay */
-    display: flex;  /* Flexbox for buttons */
-    gap: 1rem;
-    z-index: 2;  /* Ensure it’s above the camera */
-}
-
-.qr-actions-overlay button {
-    padding: 0.5rem 1rem;
+/* General Button Styling */
+button {
+    padding: 0.75rem 1.5rem;
     font-size: 1rem;
+    color: #ffffff;
+    background-color: #1e90ff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    color: #ffffff;
     transition: background-color 0.3s ease;
 }
 
-.qr-actions-overlay .accept {
-    background-color: #28a745;
+/* Hover effect */
+button:hover {
+    background-color: #4682b4; /* Lighter blue for hover effect */
 }
 
-.qr-actions-overlay .accept:hover {
-    background-color: #218838;
+/* Specific styling for accept button */
+#accept-button {
+    background-color: #28a745;  /* Green for "accept" */
 }
 
-.qr-actions-overlay .decline {
-    background-color: #dc3545;
+#accept-button:hover {
+    background-color: #218838;  /* Darker green on hover */
 }
 
-.qr-actions-overlay .decline:hover {
-    background-color: #c82333;
+/* Specific styling for unlock button */
+#unlock-button {
+    background-color: #dc3545;  /* Red for "unlock" */
+}
+
+#unlock-button:hover {
+    background-color: #c82333;  /* Darker red on hover */
+}
+
+/* Optional: Visibility control when button should be hidden */
+button[style="display: none;"] {
+    display: none !important;
 }
 
 /* Feedback Text */
