@@ -33,14 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
         feedback.textContent = "Accepterad";
         feedback.style.color = "green";
 
-        const timestamp = getTimestamp();
-        const listItem = document.createElement("li");
-        listItem.textContent = `${decodedText} (Skannad: ${timestamp})`;
-        guestList.appendChild(listItem);
 
         checkQRCodeStatus(decodedText);
-
-        acceptButton.style.display = "inline-block";
 
         stopCamera();
     };
@@ -76,11 +70,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     acceptButton.style.display = "none";
                     return;
                 }
+
+                if (!scannedCodes.has(paymentSessionId)){
+                    const timestamp = getTimestamp();
+                    const listItem = document.createElement("li");
+                    listItem.textContent = `${data.name || "Unknown"} (Skannad: ${timestamp})`;
+                    guestList.appendChild(listItem);
+                }
+
                 // Show the accept button
                 acceptButton.style.display = "inline-block";
 
-                // Save the current payment session ID
-                currentPaymentSessionId = paymentSessionId;
 
                 // Mark scanning as completed
                 isScanningCompleted = true;
