@@ -8,19 +8,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const scannedName = document.getElementById("scanned-name");
     const scannedStatus = document.getElementById("scanned-status");
     const guestList = document.getElementById("guest-list");
-
     let html5QrCode = new Html5Qrcode("reader");
     let isCameraActive = true;
     let scannedCodes = new Set(); // To store unique scanned QR codes
     let isScanningCompleted = false; // Flag to check if scanning is completed
     let currentPaymentSessionId = null; // To store the current payment session ID
-
     // Utility function to get current timestamp
     const getTimestamp = () => {
         const now = new Date();
         return now.toLocaleString(); // Format: "MM/DD/YYYY, HH:MM:SS"
     };
-
     // Function called when a QR code is successfully scanned
     const onScanSuccess = (decodedText) => {
         if (scannedCodes.has(decodedText) || isScanningCompleted) {
@@ -28,23 +25,17 @@ document.addEventListener("DOMContentLoaded", () => {
             feedback.style.color = "orange";
             return;
         }
-
         scannedCodes.add(decodedText);
         feedback.textContent = "Accepterad";
         feedback.style.color = "green";
-
         const timestamp = getTimestamp();
         const listItem = document.createElement("li");
         listItem.textContent = `${decodedText} (Skannad: ${timestamp})`;
         guestList.appendChild(listItem);
-
         checkQRCodeStatus(decodedText);
-
         acceptButton.style.display = "inline-block";
-
         stopCamera();
     };
-
     // Function to toggle guest list visibility
     clearHistoryButton.addEventListener("click", () => {
         if (guestListContainer.style.display === "none") {
@@ -53,35 +44,21 @@ document.addEventListener("DOMContentLoaded", () => {
             guestListContainer.style.display = "none";
         }
     });
-
     const checkQRCodeStatus = (paymentSessionId) => {
         const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
-
         fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
                 console.log(data);
-
                 // Update name and status
                 scannedName.textContent = data.name || "Unknown";
                 scannedStatus.textContent = data.status;
-
                 // Show name and status
                 nameStatusContainer.style.display = "block";
-
-                if (data.status === "Redan skannad") 
-                {
-                    feedback.textContent = "Redan skannad eller skanning slutförd.";
-                    feedback.style.color = "orange";
-                    acceptButton.style.display = "none";
-                    return;
-                }
                 // Show the accept button
                 acceptButton.style.display = "inline-block";
-
                 // Save the current payment session ID
                 currentPaymentSessionId = paymentSessionId;
-
                 // Mark scanning as completed
                 isScanningCompleted = true;
             })
@@ -91,14 +68,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 feedback.style.color = "red";
             });
     };
-
-
-
+    
  // Start the camera
  const startCamera = (cameraId) => {
     const qrboxSize = window.innerWidth <= 480 ? 200 : 250;
     const fps = window.innerWidth <= 480 ? 5 : 10; // Lägre FPS för små skärmar
-
     html5QrCode
         .start(cameraId, { 
             fps: fps, 
@@ -115,10 +89,6 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error(err);
         });
 };
-
-
-
-
     // Stop the camera
     const stopCamera = () => {
         html5QrCode
@@ -133,7 +103,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error(err);
             });
     };
-
     // Toggle camera state
     toggleCameraButton.addEventListener("click", () => {
         if (isCameraActive) {
@@ -142,7 +111,6 @@ document.addEventListener("DOMContentLoaded", () => {
             startCamera(currentCameraId);
         }
     });
-
     // Switch camera
     switchCameraButton.addEventListener("click", () => {
         Html5Qrcode.getCameras()
@@ -166,7 +134,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error(err);
             });
     });
-
     // Handle the "Släpp In" button click
     acceptButton.addEventListener("click", () => {
         // Make sure the paymentSessionId is available before sending the request
@@ -175,14 +142,11 @@ document.addEventListener("DOMContentLoaded", () => {
             feedback.style.color = "red";
             return;
         }
-
         // Make the API call to update the QR code status
         updateQRCodeStatus(currentPaymentSessionId, "Redan skannad");
     });
-
     const updateQRCodeStatus = (paymentSessionId, status) => {
         const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/UpdateQRCodeStatus?paymentSessionId=${paymentSessionId}&status=${status}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
-
         fetch(apiUrl, {
             method: 'POST',
         })
@@ -191,15 +155,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log("Status updated:", data);
                 feedback.textContent = `Status uppdaterad till: ${status}`;
                 feedback.style.color = "green";
-
                 setTimeout(() => {
                     feedback.textContent = "";
                 }, 3000);
-
                 // Hide name and status, and hide the accept button
                 nameStatusContainer.style.display = "none";
                 acceptButton.style.display = "none";
-
                 // Restart camera
                 startCamera(currentCameraId);
             })
@@ -209,7 +170,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 feedback.style.color = "red";
             });
     };
-
     // Initialize the camera
     Html5Qrcode.getCameras()
         .then((cameras) => {
@@ -226,4 +186,4 @@ document.addEventListener("DOMContentLoaded", () => {
             feedback.style.color = "red";
             console.error(err);
         });
-    });
+});
