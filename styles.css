@@ -279,7 +279,14 @@ button[style="display: none;"] {
     cursor: pointer;
 }
 
-.back-button {
+#lockscreen-form {
+    display: flex;
+    flex-direction: column; /* Gör att knapparna hamnar i en vertikal rad */
+    gap: 10px; /* Lägg till ett gap mellan knapparna */
+}
+
+.control-button, .back-button {
+    width: 100%; /* Se till att båda knapparna tar upp hela bredden */
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
     color: #ffffff;
@@ -288,6 +295,14 @@ button[style="display: none;"] {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+}
+
+.back-button {
+    margin-top: 10px; /* Lägg till lite mellanrum ovanför "Go Back"-knappen */
+}
+
+.control-button:hover, .back-button:hover {
+    background-color: #4682b4; /* Ljusare blå för hover-effekten */
 }
 
 .error-message {
