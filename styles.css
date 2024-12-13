@@ -31,23 +31,19 @@ body {
 
     .main-content {
         display: flex;
-        flex-direction: column;
         justify-content: center;
         align-items: center;
         flex-grow: 1;
-        padding: 2rem;
-        min-height: 100vh; /* Se till att main-content alltid tar upp hela höjden */
-        box-sizing: border-box; /* För att undvika att padding ökar höjden */
+        padding: 2rem; /* Reduced padding */
+        text-align: center;
     }
-    
-    /* Justera ticket-container */
+
     .ticket-container {
         padding: 2rem;
         border-radius: 10px;
         text-align: center;
         width: 100%;
         max-width: 400px;
-        flex-grow: 1; /* Gör att ticket-container växer om det behövs */
     }
 
     .ticket-container h1 {
@@ -297,10 +293,9 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100vh;
+    color: #ffffff;
     flex-direction: column;
-    flex-grow: 1;
-    padding: 2rem;
-    min-height: 100vh;
 }
 
 .ticket-container {
@@ -309,10 +304,9 @@ body {
     text-align: center;
     width: 100%;
     max-width: 400px;
-    max-height: 80vh; /* Sätt en maximal höjd för ticket-container */
-    overflow-y: auto; /* Gör att innehållet kan scrollas om det är för stort */
+    position: relative;
+    z-index: 5;
 }
-
 
 .ticket-container h1 {
     font-size: 1.8rem;
@@ -393,28 +387,30 @@ body {
     font-size: 16px;
 } 
 
-#qr-code-result img {
-    max-width: 100%;
-    height: auto; /* Bevara bildens proportioner */
-    display: block; /* Ta bort extra mellanrum under bilden */
-    margin: 0 auto; /* Centrera bilden */
+.ticket-form, .instructions {
+    transition: opacity 0.3s ease;
 }
 
-
+/* När QR-koden visas, se till att visa resultatet i mitten */
 #qr-code-result {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    min-height: 100vh; /* Se till att QR-koden tar upp hela höjden */
+    height: 100vh;
     opacity: 1;
     transition: opacity 0.5s ease-in-out;
+    position: fixed; /* Se till att den ligger överallt annat */
+    top: 0;
+    left: 0;
+    z-index: 10; /* Så att den ligger över andra element */
 }
 
-
-.ticket-form, .instructions {
-    display: block; 
-    transition: opacity 0.3s ease;
+#qr-code-result img {
+    max-width: 100%;
+    height: auto; /* Bevara bildens proportioner */
+    display: block; /* Ta bort extra mellanrum under bilden */
+    margin: 0 auto; /* Centrera bilden */
 }
 
 .ticket-form, .instructions {
@@ -424,5 +420,4 @@ body {
 /* Dölja instruktioner och formulär när QR-koden visas */
 .ticket-form[style="display: none"], .instructions[style="display: none"] {
     opacity: 0;
-    display: none;
 }
