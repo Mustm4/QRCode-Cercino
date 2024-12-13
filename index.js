@@ -12,14 +12,13 @@ document.querySelector('.ticket-form').addEventListener('submit', async (event) 
         const response = await fetch(`https://stripewebhook-function.azurewebsites.net/api/GetQRCodeImage?orderId=${orderId}`, {
             cache: 'no-store', // För att undvika cache-problem
         });
-
+        
+        console.log('Response:', response);  // Logga hela svaret
+        
         if (response.ok) {
             const data = await response.json();
+            console.log('Fetched data:', data);  // Logga JSON-responsen
             const imageUrl = data.imageUrl;
-
-            // Debugging för att se vad som händer
-            console.log('Fetched imageUrl:', imageUrl);
-
             // Lägg till bilden i DOM
             const img = document.createElement('img');
             img.src = imageUrl;
@@ -29,6 +28,7 @@ document.querySelector('.ticket-form').addEventListener('submit', async (event) 
             console.error('Error response:', response.status, response.statusText);
             resultDiv.textContent = `Error fetching QR code: ${response.statusText}`;
         }
+        
     } catch (error) {
         console.error('Fetch error:', error);
         resultDiv.textContent = 'An error occurred while retrieving your QR code.';
