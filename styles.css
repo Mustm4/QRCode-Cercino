@@ -393,7 +393,7 @@ body {
 
 /* När QR-koden visas, se till att visa resultatet i mitten */
 #qr-code-result {
-    display: flex;
+    display: fixed;
     justify-content: center;
     align-items: center;
     width: 100%;
