@@ -414,7 +414,8 @@ body {
 }
 
 .ticket-form, .instructions {
-    opacity: 1;
+    position: relative;
+    z-index: 20;
 }
 
 /* Dölja instruktioner och formulär när QR-koden visas */
