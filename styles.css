@@ -383,3 +383,18 @@ body {
 #name-status-container p {
     font-size: 16px;
 } 
+
+#qr-code-result img {
+    max-width: 100%;
+    height: auto; /* Bevara bildens proportioner */
+    display: block; /* Ta bort extra mellanrum under bilden */
+    margin: 0 auto; /* Centrera bilden om du vill */
+}
+
+#qr-code-result {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh; /* Detta gör att det tar upp hela höjden av sidan, kan justeras */
+}
