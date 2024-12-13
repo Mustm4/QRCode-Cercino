@@ -393,16 +393,16 @@ body {
 
 /* När QR-koden visas, se till att visa resultatet i mitten */
 #qr-code-result {
-    position: fixed; /* Fixera QR-koden på skärmen */
-    top: 50%; /* Vertikal centrerad */
-    left: 50%; /* Horisontell centrerad */
+    position: absolute; /* Gör att QR-koden är relativ till sitt närmaste positionerade föräldraelement */
+    top: 50%; /* Vertikal centering */
+    left: 50%; /* Horisontell centering */
     transform: translate(-50%, -50%); /* Justera så att den verkligen är centrerad */
     z-index: 10; /* Säkerställ att den ligger ovanpå andra element */
-    width: 80%; /* Bestäm en maxbredd */
+    width: 80%; /* Maxbredd för QR-koden */
     max-width: 500px; /* Begränsa maxbredden */
     height: auto; /* Behåll proportionerna för bilden */
     display: flex;
-    justify-content: center; /* Se till att bilden är centrerad */
+    justify-content: center;
     align-items: center;
 }
 
