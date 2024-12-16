@@ -36,8 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
         feedback.style.color = "green";
 
         // Update the guest's status after scanning
-        updateGuestStatus(currentPaymentSessionId, "Redan skannad", timestamp);
-        fetchScannedGuests(); // Refresh guest list
         acceptButton.style.display = "inline-block";
         stopCamera();
     };
