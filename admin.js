@@ -177,6 +177,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Hide name and status, and hide the accept button
                 nameStatusContainer.style.display = "none";
                 acceptButton.style.display = "none";
+
+                fetchScannedGuests();
+
                 // Restart camera
                 startCamera(currentCameraId);
             })
@@ -213,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
             guestList.innerHTML = "";
             data.forEach(guest => {
                 const listItem = document.createElement("li");
-                listItem.textContent = `${guest.Name} - ${guest.Status} (Köptes: ${guest.Date}, Skannade sin biljett: ${guest.ScannedTime})`;
+                listItem.textContent = `${guest.Name} - ${guest.Status} (Köptes: ${guest.Date}, Skannades: ${guest.ScannedTime})`;
                 guestList.appendChild(listItem);
             });
         })
