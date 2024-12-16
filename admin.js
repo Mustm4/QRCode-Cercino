@@ -29,13 +29,11 @@ document.addEventListener("DOMContentLoaded", () => {
         scannedCodes.add(decodedText);
         feedback.textContent = "Accepterad";
         feedback.style.color = "green";
-        const timestamp = getTimestamp();
-        const listItem = document.createElement("li");
-        listItem.textContent = `${decodedText} (Skannad: ${timestamp})`;
-        guestList.appendChild(listItem);
-        checkQRCodeStatus(decodedText);
+        
+        fetchScannedGuests();
         acceptButton.style.display = "inline-block";
         stopCamera();
+
     };
     // Function to toggle guest list visibility
     clearHistoryButton.addEventListener("click", () => {
@@ -206,9 +204,12 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(response => response.json())
         .then(data => {
             guestList.innerHTML = "";
+
+            const timestamp = getTimestamp();
+
             data.forEach(guest => {
                 const listItem = document.createElement("li");
-                listItem.textContent = `${guest.Name} - ${guest.Status} (Tid: ${guest.ScannedTime})`;
+                listItem.textContent = `${guest.Name} - ${guest.Status} (Köptes: ${guest.Date}, Skannade sin biljett: ${timestamp})`;
                 guestList.appendChild(listItem);
             });
         })
