@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const scannedName = document.getElementById("scanned-name");
     const scannedStatus = document.getElementById("scanned-status");
     const guestList = document.getElementById("guest-list");
-    fetchScannedGuests();
 
     let html5QrCode = new Html5Qrcode("reader");
     let isCameraActive = true;
@@ -35,6 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
         listItem.textContent = `${decodedText} (Skannad: ${timestamp})`;
         guestList.appendChild(listItem);
         checkQRCodeStatus(decodedText);
+        
+        fetchScannedGuests();
         acceptButton.style.display = "inline-block";
         stopCamera();
     };
@@ -199,7 +200,6 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error(err);
         });
 
-    // Load guest list from LocalStorage
     // Load guest list
     const fetchScannedGuests = () => {
         const apiUrl = "https://stripewebhook-function.azurewebsites.net/api/GetScannedGuests?code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==";
@@ -208,9 +208,11 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(response => response.json())
         .then(data => {
             guestList.innerHTML = "";
+            const timestamp = getTimestamp();
             data.forEach(guest => {
                 const listItem = document.createElement("li");
                 listItem.textContent = `${guest.Name} - ${guest.Status} (Tid: ${guest.ScannedTime})`;
+                listItem.textContent = `${guest.Name} - ${guest.Status} (Köptes: ${guest.Date}, Skannade sin biljett: ${timestamp})`;
                 guestList.appendChild(listItem);
             });
         })
@@ -220,5 +222,6 @@ document.addEventListener("DOMContentLoaded", () => {
             feedback.style.color = "red";
         });
     };
+
     fetchScannedGuests();
 });
