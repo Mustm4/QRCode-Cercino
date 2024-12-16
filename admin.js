@@ -231,10 +231,11 @@ document.addEventListener("DOMContentLoaded", () => {
             // Lägg till varje gäst i listan
             data.forEach(guest => {
                 // Konvertera ScannedTime till ett Date-objekt och visa i lokal tid
-                const scannedTime = new Date(guest.ScannedTime);
+                const scannedTime = new Date(guest.ScannedTime + 'Z');
     
                 // Här konverterar vi till den lokala tidszonen, utan att visa tidszonsförkortningen
                 const localTimeString = scannedTime.toLocaleString("sv-SE", {
+                    timeZone: "Europe/Stockholm",
                     timeZoneName: "short",  // Visa kort tidszonsnamn (CEST eller CET)
                 });
     
