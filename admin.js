@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const scannedName = document.getElementById("scanned-name");
     const scannedStatus = document.getElementById("scanned-status");
     const guestList = document.getElementById("guest-list");
-    fetchScannedGuests();
 
     let html5QrCode = new Html5Qrcode("reader");
     let isCameraActive = true;
@@ -199,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error(err);
         });
 
-    // Load guest list from LocalStorage
+    // Load guest list
     const fetchScannedGuests = () => {
         const apiUrl = "https://stripewebhook-function.azurewebsites.net/api/GetScannedGuests?code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==";
         
@@ -219,4 +218,6 @@ document.addEventListener("DOMContentLoaded", () => {
             feedback.style.color = "red";
         });
     };
+
+    fetchScannedGuests();
 });
