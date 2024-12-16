@@ -236,7 +236,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Här konverterar vi till den lokala tidszonen, utan att visa tidszonsförkortningen
                 const localTimeString = scannedTime.toLocaleString("sv-SE", {
                     timeZone: "Europe/Stockholm",
-                    timeZoneName: "short",  // Visa kort tidszonsnamn (CEST eller CET)
                 });
     
                 const listItem = document.createElement("li");
