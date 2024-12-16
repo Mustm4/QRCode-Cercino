@@ -222,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
             data.sort((a, b) => {
                 const scannedTimeA = new Date(a.ScannedTime);
                 const scannedTimeB = new Date(b.ScannedTime);
-                return scannedTimeB - scannedTimeA; // Skickar tillbaka resultatet för fallande ordning
+                return scannedTimeB - scannedTimeA; // Fallande ordning
             });
     
             // Töm nuvarande lista
@@ -230,8 +230,13 @@ document.addEventListener("DOMContentLoaded", () => {
     
             // Lägg till varje gäst i listan
             data.forEach(guest => {
+                // Konvertera ScannedTime till lokal tid
+                const scannedTime = new Date(guest.ScannedTime).toLocaleString("sv-SE", {
+                    timeZoneName: "short"
+                });
+    
                 const listItem = document.createElement("li");
-                listItem.textContent = `${guest.Name} - ${guest.Status} (Köptes: ${guest.Date}, Skannades: ${guest.ScannedTime})`;
+                listItem.textContent = `${guest.Name} - ${guest.Status} (Köptes: ${guest.Date}, Skannades: ${scannedTime})`;
                 guestList.appendChild(listItem);
             });
         })
@@ -240,7 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
             feedback.textContent = "Kunde inte ladda gästlistan.";
             feedback.style.color = "red";
         });
-    };    
+    };       
 
     fetchScannedGuests();
 });
