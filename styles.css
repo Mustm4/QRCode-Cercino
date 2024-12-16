@@ -306,9 +306,28 @@ button[style="display: none;"] {
 }
 
 .error-message {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: red;
-    margin-top: 1rem;
+    margin-bottom: 20px;  /* Lägg till mellanrum under felmeddelandet */
+    text-align: center;
+}
+
+/* Stil för "Try Again"-knappen */
+.try-again-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: #1e90ff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin: 0 auto; /* Centrera knappen */
+}
+
+.try-again-button:hover {
+    background-color: #4682b4; /* Ljusare blå vid hover */
 }
 
 /* Main content */
@@ -416,17 +435,12 @@ button[style="display: none;"] {
 
 /* När QR-koden visas, se till att visa resultatet i mitten */
 #qr-code-result {
-    position: absolute; /* Gör att QR-koden är relativ till sitt närmaste positionerade föräldraelement */
-    top: 50%; /* Vertikal centering */
-    left: 50%; /* Horisontell centering */
-    transform: translate(-50%, -50%); /* Justera så att den verkligen är centrerad */
-    z-index: 10; /* Säkerställ att den ligger ovanpå andra element */
-    width: 80%; /* Maxbredd för QR-koden */
-    max-width: 500px; /* Begränsa maxbredden */
-    height: auto; /* Behåll proportionerna för bilden */
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;  /* Stapla felmeddelandet och knappen vertikalt */
+    align-items: center;     /* Centrera horisontellt */
+    justify-content: center; /* Centrera vertikalt */
+    text-align: center;
+    margin-top: 20px;        /* Lägg till avstånd från andra element */
 }
 
 #qr-code-result img {
