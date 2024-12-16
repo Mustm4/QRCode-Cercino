@@ -214,11 +214,21 @@ document.addEventListener("DOMContentLoaded", () => {
     // Load guest list
     const fetchScannedGuests = () => {
         const apiUrl = "https://stripewebhook-function.azurewebsites.net/api/GetScannedGuests?code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==";
-
+    
         fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
+            // Sortera gästerna efter 'ScannedTime' i fallande ordning (nyaste först)
+            data.sort((a, b) => {
+                const scannedTimeA = new Date(a.ScannedTime);
+                const scannedTimeB = new Date(b.ScannedTime);
+                return scannedTimeB - scannedTimeA; // Skickar tillbaka resultatet för fallande ordning
+            });
+    
+            // Töm nuvarande lista
             guestList.innerHTML = "";
+    
+            // Lägg till varje gäst i listan
             data.forEach(guest => {
                 const listItem = document.createElement("li");
                 listItem.textContent = `${guest.Name} - ${guest.Status} (Köptes: ${guest.Date}, Skannades: ${guest.ScannedTime})`;
@@ -230,7 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
             feedback.textContent = "Kunde inte ladda gästlistan.";
             feedback.style.color = "red";
         });
-    };
+    };    
 
     fetchScannedGuests();
 });
