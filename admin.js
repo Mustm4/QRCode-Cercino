@@ -56,8 +56,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Update name and status
                 scannedName.textContent = data.name || "Unknown";
                 scannedStatus.textContent = data.status;
-                // Show name and status
+                const scannedTime = data.ScannedTime || !"N/A";
+
+                // Show name, status & time
                 nameStatusContainer.style.display = "block";
+                scannedStatus.textContent += scannedTime !== "N/A" ? ` (Skannades: ${scannedTime})` : "";
 
                 if (data.status === "Redan skannad") 
                     {
@@ -208,11 +211,9 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(response => response.json())
         .then(data => {
             guestList.innerHTML = "";
-            const timestamp = getTimestamp();
             data.forEach(guest => {
                 const listItem = document.createElement("li");
-                listItem.textContent = `${guest.Name} - ${guest.Status} (Tid: ${guest.ScannedTime})`;
-                listItem.textContent = `${guest.Name} - ${guest.Status} (Köptes: ${guest.Date}, Skannade sin biljett: ${timestamp})`;
+                listItem.textContent = `${guest.Name} - ${guest.Status} (Köptes: ${guest.Date}, Skannade sin biljett: ${guest.ScannedTime})`;
                 guestList.appendChild(listItem);
             });
         })
