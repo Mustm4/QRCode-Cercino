@@ -230,14 +230,16 @@ document.addEventListener("DOMContentLoaded", () => {
     
             // Lägg till varje gäst i listan
             data.forEach(guest => {
-                // Konvertera ScannedTime till lokal tid
-                const scannedTime = new Date(guest.ScannedTime).toLocaleString("sv-SE", {
-                    timeZone: "Europe/Stockholm",  // Specifika tidszonen
-                    timeZoneName: "short"
+                // Konvertera ScannedTime till ett Date-objekt och visa i lokal tid
+                const scannedTime = new Date(guest.ScannedTime);
+    
+                // Här konverterar vi till den lokala tidszonen, utan att visa tidszonsförkortningen
+                const localTimeString = scannedTime.toLocaleString("sv-SE", {
+                    timeZoneName: "short",  // Visa kort tidszonsnamn (CEST eller CET)
                 });
     
                 const listItem = document.createElement("li");
-                listItem.textContent = `${guest.Name} - ${guest.Status} (Köptes: ${guest.Date}, Skannades: ${scannedTime})`;
+                listItem.textContent = `${guest.Name} - ${guest.Status} (Köptes: ${guest.Date}, Skannades: ${localTimeString})`;
                 guestList.appendChild(listItem);
             });
         })
@@ -246,7 +248,8 @@ document.addEventListener("DOMContentLoaded", () => {
             feedback.textContent = "Kunde inte ladda gästlistan.";
             feedback.style.color = "red";
         });
-    };      
+    };
+     
 
     fetchScannedGuests();
 });
