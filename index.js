@@ -6,13 +6,14 @@ document.querySelector('.ticket-form').addEventListener('submit', async (event) 
     const resultDiv = document.getElementById('qr-code-result');
     const instructions = document.querySelector('.instructions');
     const form = document.querySelector('.ticket-form');
+    const ticketTitle = document.querySelector('h1');  // Rubriken "Retrieve Your Ticket"
+    const tryAgainButton = document.createElement('button');
 
-    // Döljer instruktioner och formulär
+    // Döljer instruktioner, formulär och rubrik
     instructions.style.display = 'none';
     form.style.display = 'none';
-
-    // Clear previous results
-    resultDiv.innerHTML = '';
+    ticketTitle.style.display = 'none';  // Döljer rubriken
+    resultDiv.innerHTML = '';  // Tömmer resultatdiven för att visa nya element
 
     try {
         const response = await fetch(`https://stripewebhook-function.azurewebsites.net/api/GetQRCodeImage?orderId=${orderId}`, {
@@ -32,11 +33,33 @@ document.querySelector('.ticket-form').addEventListener('submit', async (event) 
             resultDiv.appendChild(img);
         } else {
             console.error('Error response:', response.status, response.statusText);
-            resultDiv.textContent = `Error fetching QR code: ${response.statusText}`;
+            showError();
         }
 
     } catch (error) {
         console.error('Fetch error:', error);
-        resultDiv.textContent = 'An error occurred while retrieving your QR code.';
+        showError();
+    }
+
+    // Funktion som hanterar visningen av felmeddelandet och knappen
+    function showError() {
+        // Skapa och visa felmeddelande
+        const errorMessage = document.createElement('div');
+        errorMessage.classList.add('error-message');
+        errorMessage.textContent = 'Invalid Order ID. Please try again.';
+        resultDiv.appendChild(errorMessage);
+
+        // Skapa och visa knappen "Try Again"
+        tryAgainButton.textContent = 'Try Again';
+        tryAgainButton.classList.add('try-again-button');
+        resultDiv.appendChild(tryAgainButton);
+
+        // Lägg till event listener till knappen "Try Again"
+        tryAgainButton.addEventListener('click', () => {
+            ticketTitle.style.display = 'block';  // Visa rubriken igen
+            instructions.style.display = 'block';
+            form.style.display = 'block';
+            resultDiv.innerHTML = '';  // Rensa tidigare resultat och felmeddelande
+        });
     }
 });
