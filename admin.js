@@ -38,6 +38,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Update the guest's status after scanning
         acceptButton.style.display = "inline-block";
         stopCamera();
+        updateGuestStatus(currentPaymentSessionId, "Redan skannad", timestamp);
+        fetchScannedGuests(); // Refresh guest list
+        
     };
 
     // Handle the "Släpp In" button click
