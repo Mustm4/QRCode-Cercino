@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Function called when a QR code is successfully scanned
     const onScanSuccess = (decodedText) => {
-        const timestamp = getTimestamp(); // Get timestamp on successful scan
 
         if (scannedCodes.has(decodedText) || isScanningCompleted) {
             feedback.textContent = "Redan skannad eller skanning slutförd.";
@@ -36,11 +35,12 @@ document.addEventListener("DOMContentLoaded", () => {
         feedback.style.color = "green";
 
         // Update the guest's status after scanning
-        acceptButton.style.display = "inline-block";
-        stopCamera();
+        const timestamp = getTimestamp(); // Get timestamp on successful scan
+        checkQRCodeStatus(decodedText);
         updateGuestStatus(currentPaymentSessionId, "Redan skannad", timestamp);
         fetchScannedGuests(); // Refresh guest list
-        
+        acceptButton.style.display = "inline-block";
+        stopCamera();
     };
 
     // Handle the "Släpp In" button click
