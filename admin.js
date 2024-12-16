@@ -232,6 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
             data.forEach(guest => {
                 // Konvertera ScannedTime till lokal tid
                 const scannedTime = new Date(guest.ScannedTime).toLocaleString("sv-SE", {
+                    timeZone: "Europe/Stockholm",  // Specifika tidszonen
                     timeZoneName: "short"
                 });
     
@@ -245,7 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
             feedback.textContent = "Kunde inte ladda gästlistan.";
             feedback.style.color = "red";
         });
-    };       
+    };      
 
     fetchScannedGuests();
 });
