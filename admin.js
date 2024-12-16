@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const scannedName = document.getElementById("scanned-name");
     const scannedStatus = document.getElementById("scanned-status");
     const guestList = document.getElementById("guest-list");
+    fetchScannedGuests();
+
     let html5QrCode = new Html5Qrcode("reader");
     let isCameraActive = true;
     let scannedCodes = new Set(); // To store unique scanned QR codes
@@ -151,7 +153,9 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
         // Make the API call to update the QR code status
-        updateQRCodeStatus(currentPaymentSessionId, "Redan skannad");
+        updateQRCodeStatus(currentPaymentSessionId, "Redan skannad").then(() => {
+            fetchScannedGuests();
+        });
     });
     const updateQRCodeStatus = (paymentSessionId, status) => {
         const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/UpdateQRCodeStatus?paymentSessionId=${paymentSessionId}&status=${status}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
@@ -194,4 +198,25 @@ document.addEventListener("DOMContentLoaded", () => {
             feedback.style.color = "red";
             console.error(err);
         });
+
+    // Load guest list from LocalStorage
+    const fetchScannedGuests = () => {
+        const apiUrl = "https://stripewebhook-function.azurewebsites.net/api/GetScannedGuests?code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==";
+        
+        fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            guestList.innerHTML = "";
+            data.forEach(guest => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${guest.Name} - ${guest.Status} (Tid: ${guest.ScannedTime})`;
+                guestList.appendChild(listItem);
+            });
+        })
+        .catch(error => {
+            console.error("Fel vid hämtning av gästlistan:", error);
+            feedback.textContent = "Kunde inte ladda gästlistan.";
+            feedback.style.color = "red";
+        });
+    };
 });
