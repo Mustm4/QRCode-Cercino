@@ -163,7 +163,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     const updateQRCodeStatus = (paymentSessionId, status) => {
         const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/UpdateQRCodeStatus?paymentSessionId=${paymentSessionId}&status=${status}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
-        fetch(apiUrl, {
+    
+        return fetch(apiUrl, { // Returnera Promise från fetch
             method: 'POST',
         })
             .then(response => response.json())
@@ -171,16 +172,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log("Status updated:", data);
                 feedback.textContent = `Status uppdaterad till: ${status}`;
                 feedback.style.color = "green";
+    
                 setTimeout(() => {
                     feedback.textContent = "";
                 }, 3000);
+    
                 // Hide name and status, and hide the accept button
                 nameStatusContainer.style.display = "none";
                 acceptButton.style.display = "none";
-
+    
+                // Hämta uppdaterad gästlista
                 fetchScannedGuests();
-
-                // Restart camera
+    
+                // Starta om kameran
                 startCamera(currentCameraId);
             })
             .catch((error) => {
@@ -189,6 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 feedback.style.color = "red";
             });
     };
+    
     // Initialize the camera
     Html5Qrcode.getCameras()
         .then((cameras) => {
