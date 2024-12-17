@@ -179,7 +179,8 @@ button {
 
 /* Hover effect */
 button:hover {
-    background-color: #4682b4; /* Lighter blue for hover effect */
+    background-color: black;
+    color: hsl(329.1, 84%, 69.02%);
 }
 
 /* Specific styling for accept button */
@@ -325,7 +326,8 @@ button[style="display: none;"] {
 }
 
 .control-button:hover, .back-button:hover {
-    background-color: #4682b4; /* Ljusare blå för hover-effekten */
+    background-color: black;
+    color: hsl(329.1, 84%, 69.02%);
 }
 
 .error-message {
@@ -351,7 +353,8 @@ button[style="display: none;"] {
 }
 
 .try-again-button:hover {
-    background-color: #4682b4; /* Ljusare blå vid hover */
+    background-color: black;
+    color: hsl(329.1, 84%, 69.02%); /* Ljusare blå vid hover */
 }
 
 /* Main content */
