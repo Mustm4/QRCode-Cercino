@@ -1,50 +1,493 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Scanner</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="auth.js"></script>
-</head>
-<body>
-    <nav class="navbar">
-        <div class="logo">
-            <a href="index.html">Cercino</a>
-        </div>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="#help">Help</a>
-        </div>
-    </nav>
-    <main class="scanner-page">
-        <div class="scanner-container">
-            <div id="reader" class="qr-reader"></div>
-            <p id="scan-feedback" class="feedback">Awaiting scan...</p>
-            <div class="bottom-buttons">
-                <button id="toggle-camera" class="control-button">Turn Off Camera</button>
-                <button id="switch-camera" class="control-button">Switch Camera</button>
-                <button id="clear-history" class="control-button">Export Guest List</button>
-            </div>
-            <div id="name-status-container" style="display: none;">
-                <p id="scanned-name">Namn: </p>
-                <p id="scanned-status">Status: </p>
-            </div>
-            <button id="accept-button" style="display: none;">Släpp In</button>
-        </div>
-        <div id="guest-list-container">
-            <h3>Gästlista</h3>
-            <ul id="guest-list"></ul>
-        </div>
-        
-        <div id="name-status-container" style="display: none;">
-            <p><strong>Namn:</strong> <span id="scanned-name"></span></p>
-            <p><strong>Status:</strong> <span id="scanned-status"></span></p>
-            <button id="accept-button" style="display: none;">Acceptera</button>
-        </div>       
-    </main>    
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.7/html5-qrcode.min.js"></script>
-    <script src="admin.js"></script>
-</body>
-</html>
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 1)), url('party.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    color: #ffffff;
+    display: block;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    padding-bottom: 80px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        background-size: cover; 
+        background-position: center;
+    }
+
+    .main-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 1;
+        padding: 2rem; /* Reduced padding */
+        text-align: center;
+    }
+
+    .ticket-container {
+        padding: 2rem;
+        border-radius: 10px;
+        text-align: center;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .ticket-container h1 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+        color: #ffffff;
+    }
+
+    .ticket-container p {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        color: #cccccc;
+    }
+
+    #reader {
+        margin-top: 0px;  /* Mindre margin för mindre enheter */
+        height: 50vh;
+    }
+
+    button {
+        width: 100%;
+        padding: 1rem;  /* Adjust button size for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        height: auto; /* Adjust height for smaller screens */
+    }
+
+    .main-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 1;
+        padding: 1.5rem; /* Reduced padding for smaller screens */
+        text-align: center; 
+    }
+
+    .ticket-container {
+        padding: 1.5rem;
+        border-radius: 10px;
+        text-align: center;
+        width: 100%;
+        max-width: 350px; /* Slightly smaller max-width for small screens */
+    }
+
+    .ticket-container h1 {
+        font-size: 1.6rem; /* Adjusted font size */
+        margin-bottom: 1rem;
+        color: #ffffff;
+    }
+
+    .ticket-container p {
+        font-size: 0.9rem; /* Smaller font size */
+        margin-bottom: 1rem;
+        color: #cccccc;
+    }
+
+    #reader {
+        margin-top: 0px;  /* Mindre margin för mindre enheter */
+        height: 50vh;
+    }
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: black;
+    padding: 1rem 2rem;
+    position: relative; /* Behåller navbaren i flödet */
+    z-index: 10; /* Se till att navbaren ligger ovanför kameran */
+}
+
+.navbar .logo a {
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 1.7rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 400;
+}
+
+.nav-links a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-left: 1rem;
+    font-weight: 400;
+}
+
+/* Footer */
+.footer {
+    text-align: center;  /* Centrerar texten horisontellt */
+    padding: 20px;  /* Lägger till lite mellanrum runt om */
+}
+
+p {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: medium;
+    font-weight: 400;
+}
+
+/* Scanner Page */
+.scanner-page {
+    display: flex;
+    flex-direction: column; /* Ändra från row (default) till column */
+    align-items: center;   /* Centrera innehållet horisontellt */
+    padding: 20px;
+    gap: 20px;             /* Lägger till mellanrum mellan kameran och gästlistan */
+}
+
+/* Camera Viewer */
+#reader {
+    width: 100vw;
+    height: 100%;
+}
+
+/* General Button Styling */
+button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: hsl(329.1, 84%, 69.02%);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect */
+button:hover {
+    background-color: #4682b4; /* Lighter blue for hover effect */
+}
+
+/* Specific styling for accept button */
+#accept-button {
+    background-color: #28a745;  /* Green for "accept" */
+}
+
+#accept-button:hover {
+    background-color: #218838;  /* Darker green on hover */
+}
+
+/* Specific styling for unlock button */
+#unlock-button {
+    background-color: #dc3545;  /* Red for "unlock" */
+}
+
+#unlock-button:hover {
+    background-color: #c82333;  /* Darker red on hover */
+}
+
+/* Optional: Visibility control when button should be hidden */
+button[style="display: none;"] {
+    display: none !important;
+}
+
+/* Feedback Text */
+#scan-feedback {
+    position: relative;
+    margin-top: 10px;
+    font-size: 16px;
+    color: green;
+    text-align: center;
+}
+
+/* History Widget */
+.history-widget {
+    background-color: #292929;
+    padding: 1rem;
+    border-radius: 5px;
+    margin-top: 1rem;
+    color: #ffffff;
+}
+
+.history-widget ul {
+    list-style: none;
+    padding: 0;
+}
+
+.history-widget ul li {
+    margin-bottom: 0.5rem;
+}
+
+/* Lock Screen */
+.lockscreen-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: black;
+    color: #ffffff;
+}
+
+.lockscreen-container {
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.lockscreen-container h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+}
+
+.lockscreen-container p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: #cccccc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 400;
+}
+
+#password-input {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+}
+
+.bottom-buttons {
+    position: fixed; 
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    background-color: black; 
+    padding: 10px 0;
+    z-index: 1000; 
+}
+
+.bottom-buttons button {
+    flex: 1;
+    margin: 0 5px;
+    padding: 10px;
+    font-size: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
+    color: black;
+    background-color: hsl(329.1, 84%, 69.02%);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#lockscreen-form {
+    display: flex;
+    flex-direction: column; /* Gör att knapparna hamnar i en vertikal rad */
+    gap: 10px; /* Lägg till ett gap mellan knapparna */
+}
+
+.control-button, .back-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
+    color: black;
+    background-color: hsl(329.1, 84%, 69.02%);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.back-button {
+    margin-top: 10px; /* Lägg till lite mellanrum ovanför "Go Back"-knappen */
+}
+
+.control-button:hover, .back-button:hover {
+    background-color: #4682b4; /* Ljusare blå för hover-effekten */
+}
+
+.error-message {
+    font-size: 1rem;
+    color: red;
+    margin-bottom: 20px;  /* Lägg till mellanrum under felmeddelandet */
+    text-align: center;
+}
+
+/* Stil för "Try Again"-knappen */
+.try-again-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: hsl(329.1, 84%, 69.02%);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin: 0 auto; /* Centrera knappen */
+}
+
+.try-again-button:hover {
+    background-color: #4682b4; /* Ljusare blå vid hover */
+}
+
+/* Main content */
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #ffffff;
+    flex-direction: column;
+}
+
+.ticket-container {
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+    z-index: 5;
+}
+
+.ticket-container h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+}
+
+.ticket-container p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: #cccccc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 400;
+
+}
+
+#orderid {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+}
+
+.form-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
+    color: black;
+    background-color: hsl(329.1, 84%, 69.02%);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#scanner-container {
+    margin-top: 20px;
+    text-align: center;
+    width: 100%;
+}
+
+#guest-list-container {
+    width: 100%;           /* Ta upp hela bredden av föräldern */
+    max-width: 600px;      /* Begränsa bredden för stora skärmar */
+    background-color: hsl(329.1, 84%, 69.02%);
+    padding: 15px;
+}
+
+#guest-list-container h3 {
+    margin-top: 0;
+    text-align: center;
+    font-size: 25px;
+    color: black;
+    font-weight: 600;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#guest-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 14px;
+}
+
+#guest-list li {
+    padding: 8px;
+    border-bottom: 1px solid black;
+}
+
+#guest-list li:last-child {
+    border-bottom: none;
+}
+
+#name-status-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#name-status-container p {
+    font-size: 16px;
+} 
+
+.ticket-form, .instructions {
+    transition: opacity 0.3s ease;
+}
+
+/* När QR-koden visas, se till att visa resultatet i mitten */
+#qr-code-result {
+    display: flex;
+    flex-direction: column;  /* Stapla felmeddelandet och knappen vertikalt */
+    align-items: center;     /* Centrera horisontellt */
+    justify-content: center; /* Centrera vertikalt */
+    text-align: center;
+    margin-top: 20px;        /* Lägg till avstånd från andra element */
+}
+
+#qr-code-result img {
+    max-width: 100%;
+    height: auto; /* Bevara bildens proportioner */
+    display: block; /* Ta bort extra mellanrum under bilden */
+    margin: 0 auto; /* Centrera bilden */
+}
+
+.ticket-form, .instructions {
+    position: relative;
+    z-index: 20;
+}
+
+/* Dölja instruktioner och formulär när QR-koden visas */
+.ticket-form[style="display: none"], .instructions[style="display: none"] {
+    opacity: 0;
+}
