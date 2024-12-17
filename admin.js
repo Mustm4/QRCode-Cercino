@@ -20,54 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return now.toLocaleString(); // Format: "MM/DD/YYYY, HH:MM:SS"
     };
 
-    // Funktion för att exportera gästlistan som CSV med Purchased Time och Scanned Time
-    const exportGuestListToCSV = () => {
-        const apiUrl = "https://stripewebhook-function.azurewebsites.net/api/GetScannedGuests?code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==";
     
-            fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                // Skapa CSV-huvud med kolumnnamn
-                let csvContent = "Name,Status,Purchased Time,Scanned Time\n";
-    
-                // Loopa igenom gästerna och skapa CSV-rader
-                data.forEach(guest => {
-                    // Konvertera ScannedTime och PurchasedTime till lokal tid
-                    const purchasedTime = new Date(guest.Date + 'Z').toLocaleString("sv-SE", {
-                        timeZone: "Europe/Stockholm"
-                    });
-                    const scannedTime = new Date(guest.ScannedTime + 'Z').toLocaleString("sv-SE", {
-                        timeZone: "Europe/Stockholm"
-                    });
-    
-                    // Lägg till data i CSV-innehållet
-                    csvContent += `"${guest.Name}","${guest.Status}","${purchasedTime}","${scannedTime}"\n`;
-                });
-    
-                // Skapa en "data URL" direkt i minnet
-                const encodedUri = "data:text/csv;charset=utf-8," + encodeURIComponent(csvContent);
-    
-                // Skapa en temporär länk för nedladdning
-                const link = document.createElement("a");
-                link.href = encodedUri;
-                link.setAttribute("download", "guest_list.csv");
-    
-                // Lägg till länken temporärt i DOM och klicka på den
-                document.body.appendChild(link);
-                link.click();
-    
-                // Ta bort länken efter nedladdningen
-                document.body.removeChild(link);
-            })
-            .catch(error => {
-                console.error("Fel vid export av gästlistan:", error);
-                feedback.textContent = "Kunde inte exportera gästlistan.";
-                feedback.style.color = "red";
-            });
-    };
-    
-        // Koppla export-knappen till funktionen
-        exportHistoryButton.addEventListener("click", exportGuestListToCSV);
 
 
          // Start the camera
@@ -111,14 +64,8 @@ document.addEventListener("DOMContentLoaded", () => {
         acceptButton.style.display = "inline-block";
         stopCamera();
     };
-    // Function to toggle guest list visibility
-    clearHistoryButton.addEventListener("click", () => {
-        if (guestListContainer.style.display === "none") {
-            guestListContainer.style.display = "block";
-        } else {
-            guestListContainer.style.display = "none";
-        }
-    });
+
+
     const checkQRCodeStatus = (paymentSessionId) => {
         const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
         fetch(apiUrl)
