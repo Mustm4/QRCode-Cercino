@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const feedback = document.getElementById("scan-feedback");
     const toggleCameraButton = document.getElementById("toggle-camera");
     const switchCameraButton = document.getElementById("switch-camera");
-    const clearHistoryButton = document.getElementById("clear-history");
+    const exportButton = document.getElementById("clear-history");  // Export-knappen
     const acceptButton = document.getElementById("accept-button");
     const nameStatusContainer = document.getElementById("name-status-container");
     const scannedName = document.getElementById("scanned-name");
@@ -11,15 +11,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let html5QrCode = new Html5Qrcode("reader");
     let isCameraActive = true;
-    let scannedCodes = new Set(); // To store unique scanned QR codes
-    let isScanningCompleted = false; // Flag to check if scanning is completed
-    let currentPaymentSessionId = null; // To store the current payment session ID
-    // Utility function to get current timestamp
+    let scannedCodes = new Set();
+    let isScanningCompleted = false;
+    let currentPaymentSessionId = null;
+    let currentCameraId = null; // Kamerans id
     const getTimestamp = () => {
         const now = new Date();
-        return now.toLocaleString(); // Format: "MM/DD/YYYY, HH:MM:SS"
+        return now.toLocaleString(); // Tidens timestamp
     };
-    // Function called when a QR code is successfully scanned
+
     const onScanSuccess = (decodedText) => {
         if (scannedCodes.has(decodedText) || isScanningCompleted) {
             feedback.textContent = "Redan skannad eller skanning slutförd.";
@@ -30,80 +30,86 @@ document.addEventListener("DOMContentLoaded", () => {
         feedback.textContent = "Accepterad";
         feedback.style.color = "green";
         const timestamp = getTimestamp();
-        const listItem = document.createElement("li");
-        listItem.textContent = `${decodedText} (Skannad: ${timestamp})`;
-        guestList.appendChild(listItem);
+
+        const guest = { name: decodedText, timestamp: timestamp };
+
+        // Lägg till gästen i listan i tidsordning
+        addGuestToList(guest);
+
         checkQRCodeStatus(decodedText);
-        
+
         fetchScannedGuests();
         acceptButton.style.display = "inline-block";
         stopCamera();
     };
-    // Function to toggle guest list visibility
-    clearHistoryButton.addEventListener("click", () => {
-        if (guestListContainer.style.display === "none") {
-            guestListContainer.style.display = "block";
-        } else {
-            guestListContainer.style.display = "none";
-        }
-    });
+
+    const addGuestToList = (guest) => {
+        const listItem = document.createElement("li");
+        listItem.textContent = `${guest.name} (Skannad: ${guest.timestamp})`;
+        guestList.appendChild(listItem);
+
+        // Hämta alla gäster från listan
+        const guests = Array.from(guestList.children);
+        
+        // Sortera gäster baserat på deras timestamp
+        guests.sort((a, b) => {
+            const aTime = new Date(a.textContent.match(/\(Skannad: (.*?)\)/)[1]);
+            const bTime = new Date(b.textContent.match(/\(Skannad: (.*?)\)/)[1]);
+            return aTime - bTime; // Sortera i stigande ordning
+        });
+
+        // Töm listan och lägg till gäster i sorterad ordning
+        guestList.innerHTML = "";
+        guests.forEach(guestItem => guestList.appendChild(guestItem));
+    };
+
     const checkQRCodeStatus = (paymentSessionId) => {
         const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
         fetch(apiUrl)
-        .then(response => response.json())
+            .then(response => response.json())
             .then(data => {
-                console.log(data);
-                // Update name and status
                 scannedName.textContent = data.name || "Unknown";
                 scannedStatus.textContent = data.status;
-                const scannedTime = data.ScannedTime || !"N/A";
-
-                // Show name, status & time
+                const scannedTime = data.ScannedTime || "N/A";
                 nameStatusContainer.style.display = "block";
                 scannedStatus.textContent += scannedTime !== "N/A" ? ` (Skannades: ${scannedTime})` : "";
 
-                if (data.status === "Redan skannad") 
-                    {
-                        feedback.textContent = "Redan skannad eller skanning slutförd.";
-                        feedback.style.color = "orange";
-                        acceptButton.style.display = "none";
-                        return;
-                    }
-                // Show the accept button
+                if (data.status === "Redan skannad") {
+                    feedback.textContent = "Redan skannad eller skanning slutförd.";
+                    feedback.style.color = "orange";
+                    acceptButton.style.display = "none";
+                    return;
+                }
                 acceptButton.style.display = "inline-block";
-                // Save the current payment session ID
                 currentPaymentSessionId = paymentSessionId;
-                // Mark scanning as completed
                 isScanningCompleted = true;
             })
             .catch((error) => {
-                console.error(`Error:`, error);
                 feedback.textContent = "Kunde inte hämta status från servern.";
                 feedback.style.color = "red";
             });
     };
 
- // Start the camera
- const startCamera = (cameraId) => {
-    const qrboxSize = window.innerWidth <= 480 ? 200 : 250;
-    const fps = window.innerWidth <= 480 ? 5 : 10; // Lägre FPS för små skärmar
-    html5QrCode
-        .start(cameraId, { 
-            fps: fps, 
-            qrbox: { width: qrboxSize, height: qrboxSize }
-        }, onScanSuccess)
-        .then(() => {
-            isCameraActive = true;
-            toggleCameraButton.textContent = "Turn Off Camera";
-            isScanningCompleted = false;
-        })
-        .catch((err) => {
-            feedback.textContent = "Failed to start camera.";
-            feedback.style.color = "red";
-            console.error(err);
-        });
-};
-    // Stop the camera
+    const startCamera = (cameraId) => {
+        const qrboxSize = window.innerWidth <= 480 ? 200 : 250;
+        const fps = window.innerWidth <= 480 ? 5 : 10; 
+        html5QrCode
+            .start(cameraId, { 
+                fps: fps, 
+                qrbox: { width: qrboxSize, height: qrboxSize }
+            }, onScanSuccess)
+            .then(() => {
+                isCameraActive = true;
+                toggleCameraButton.textContent = "Turn Off Camera";
+                isScanningCompleted = false;
+            })
+            .catch((err) => {
+                feedback.textContent = "Failed to start camera.";
+                feedback.style.color = "red";
+                console.error(err);
+            });
+    };
+
     const stopCamera = () => {
         html5QrCode
             .stop()
@@ -117,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error(err);
             });
     };
-    // Toggle camera state
+
     toggleCameraButton.addEventListener("click", () => {
         if (isCameraActive) {
             stopCamera();
@@ -125,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
             startCamera(currentCameraId);
         }
     });
-    // Switch camera
+
     switchCameraButton.addEventListener("click", () => {
         Html5Qrcode.getCameras()
             .then((cameras) => {
@@ -148,53 +154,44 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error(err);
             });
     });
-    // Handle the "Släpp In" button click
+
     acceptButton.addEventListener("click", () => {
-        // Make sure the paymentSessionId is available before sending the request
         if (!currentPaymentSessionId) {
             feedback.textContent = "Ingen QR-kod skannad.";
             feedback.style.color = "red";
             return;
         }
-        // Make the API call to update the QR code status
         updateQRCodeStatus(currentPaymentSessionId, "Redan skannad").then(() => {
             fetchScannedGuests();
         });
     });
+
     const updateQRCodeStatus = (paymentSessionId, status) => {
         const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/UpdateQRCodeStatus?paymentSessionId=${paymentSessionId}&status=${status}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
-    
-        return fetch(apiUrl, { // Returnera Promise från fetch
+
+        return fetch(apiUrl, {
             method: 'POST',
         })
             .then(response => response.json())
             .then(data => {
-                console.log("Status updated:", data);
                 feedback.textContent = `Status uppdaterad till: ${status}`;
                 feedback.style.color = "green";
-    
+
                 setTimeout(() => {
                     feedback.textContent = "";
                 }, 3000);
-    
-                // Hide name and status, and hide the accept button
+
                 nameStatusContainer.style.display = "none";
                 acceptButton.style.display = "none";
-    
-                // Hämta uppdaterad gästlista
                 fetchScannedGuests();
-    
-                // Starta om kameran
                 startCamera(currentCameraId);
             })
             .catch((error) => {
-                console.error(`Error:`, error);
                 feedback.textContent = "Kunde inte uppdatera status.";
                 feedback.style.color = "red";
             });
     };
-    
-    // Initialize the camera
+
     Html5Qrcode.getCameras()
         .then((cameras) => {
             if (cameras.length > 0) {
@@ -211,45 +208,43 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error(err);
         });
 
-    // Load guest list
-    const fetchScannedGuests = () => {
-        const apiUrl = "https://stripewebhook-function.azurewebsites.net/api/GetScannedGuests?code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==";
-    
-        fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            // Sortera gästerna efter 'ScannedTime' i fallande ordning (nyaste först)
-            data.sort((a, b) => {
-                const scannedTimeA = new Date(a.ScannedTime);
-                const scannedTimeB = new Date(b.ScannedTime);
-                return scannedTimeB - scannedTimeA; // Fallande ordning
-            });
-    
-            // Töm nuvarande lista
-            guestList.innerHTML = "";
-    
-            // Lägg till varje gäst i listan
-            data.forEach(guest => {
-                // Konvertera ScannedTime till ett Date-objekt och visa i lokal tid
-                const scannedTime = new Date(guest.ScannedTime + 'Z');
-    
-                // Här konverterar vi till den lokala tidszonen, utan att visa tidszonsförkortningen
-                const localTimeString = scannedTime.toLocaleString("sv-SE", {
-                    timeZone: "Europe/Stockholm",
-                });
-    
-                const listItem = document.createElement("li");
-                listItem.textContent = `${guest.Name} - ${guest.Status} (Köptes: ${guest.Date}, Skannades: ${localTimeString})`;
-                guestList.appendChild(listItem);
-            });
-        })
-        .catch(error => {
-            console.error("Fel vid hämtning av gästlistan:", error);
-            feedback.textContent = "Kunde inte ladda gästlistan.";
-            feedback.style.color = "red";
-        });
-    };
-     
+    exportButton.addEventListener("click", () => {
+        fetchScannedGuests();
+    });
 
-    fetchScannedGuests();
+    const convertToCSV = (data) => {
+        const headers = ["Name", "Status", "Date", "ScannedTime"];
+        const rows = data.map((guest) => [
+            guest.Name || "Unknown",
+            guest.Status || "Unknown",
+            guest.Date || "Unknown",
+            guest.ScannedTime || "Unknown"
+        ]);
+        const csvContent = [headers, ...rows].map(row => row.join(",")).join("\n");
+        return csvContent;
+    };
+
+    const downloadCSV = (csvContent) => {
+        const blob = new Blob([csvContent], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "guest-list.csv";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
+    const fetchScannedGuests = () => {
+        fetch("https://stripewebhook-function.azurewebsites.net/api/GetScannedGuests?code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==")
+            .then(response => response.json())
+            .then(data => {
+                const csvContent = convertToCSV(data);
+                downloadCSV(csvContent);
+            })
+            .catch((error) => {
+                console.error(`Error:`, error);
+            });
+    };
 });
