@@ -19,7 +19,79 @@ document.addEventListener("DOMContentLoaded", () => {
         const now = new Date();
         return now.toLocaleString(); // Format: "MM/DD/YYYY, HH:MM:SS"
     };
-    // Function called when a QR code is successfully scanned
+
+    // Funktion för att exportera gästlistan som CSV med Purchased Time och Scanned Time
+    const exportGuestListToCSV = () => {
+        const apiUrl = "https://stripewebhook-function.azurewebsites.net/api/GetScannedGuests?code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==";
+    
+            fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                // Skapa CSV-huvud med kolumnnamn
+                let csvContent = "Name,Status,Purchased Time,Scanned Time\n";
+    
+                // Loopa igenom gästerna och skapa CSV-rader
+                data.forEach(guest => {
+                    // Konvertera ScannedTime och PurchasedTime till lokal tid
+                    const purchasedTime = new Date(guest.Date + 'Z').toLocaleString("sv-SE", {
+                        timeZone: "Europe/Stockholm"
+                    });
+                    const scannedTime = new Date(guest.ScannedTime + 'Z').toLocaleString("sv-SE", {
+                        timeZone: "Europe/Stockholm"
+                    });
+    
+                    // Lägg till data i CSV-innehållet
+                    csvContent += `"${guest.Name}","${guest.Status}","${purchasedTime}","${scannedTime}"\n`;
+                });
+    
+                // Skapa en "data URL" direkt i minnet
+                const encodedUri = "data:text/csv;charset=utf-8," + encodeURIComponent(csvContent);
+    
+                // Skapa en temporär länk för nedladdning
+                const link = document.createElement("a");
+                link.href = encodedUri;
+                link.setAttribute("download", "guest_list.csv");
+    
+                // Lägg till länken temporärt i DOM och klicka på den
+                document.body.appendChild(link);
+                link.click();
+    
+                // Ta bort länken efter nedladdningen
+                document.body.removeChild(link);
+            })
+            .catch(error => {
+                console.error("Fel vid export av gästlistan:", error);
+                feedback.textContent = "Kunde inte exportera gästlistan.";
+                feedback.style.color = "red";
+            });
+    };
+    
+        // Koppla export-knappen till funktionen
+        exportHistoryButton.addEventListener("click", exportGuestListToCSV);
+
+
+         // Start the camera
+    const startCamera = (cameraId) => {
+    const qrboxSize = window.innerWidth <= 480 ? 200 : 250;
+    const fps = window.innerWidth <= 480 ? 5 : 10; // Lägre FPS för små skärmar
+    html5QrCode
+        .start(cameraId, { 
+            fps: fps, 
+            qrbox: { width: qrboxSize, height: qrboxSize }
+        }, onScanSuccess)
+        .then(() => {
+            isCameraActive = true;
+            toggleCameraButton.textContent = "Turn Off Camera";
+            isScanningCompleted = false;
+        })
+        .catch((err) => {
+            feedback.textContent = "Failed to start camera.";
+            feedback.style.color = "red";
+            console.error(err);
+        });
+    };
+    
+        // Function called when a QR code is successfully scanned
     const onScanSuccess = (decodedText) => {
         if (scannedCodes.has(decodedText) || isScanningCompleted) {
             feedback.textContent = "Redan skannad eller skanning slutförd.";
@@ -83,26 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     };
 
- // Start the camera
- const startCamera = (cameraId) => {
-    const qrboxSize = window.innerWidth <= 480 ? 200 : 250;
-    const fps = window.innerWidth <= 480 ? 5 : 10; // Lägre FPS för små skärmar
-    html5QrCode
-        .start(cameraId, { 
-            fps: fps, 
-            qrbox: { width: qrboxSize, height: qrboxSize }
-        }, onScanSuccess)
-        .then(() => {
-            isCameraActive = true;
-            toggleCameraButton.textContent = "Turn Off Camera";
-            isScanningCompleted = false;
-        })
-        .catch((err) => {
-            feedback.textContent = "Failed to start camera.";
-            feedback.style.color = "red";
-            console.error(err);
-        });
-};
+
     // Stop the camera
     const stopCamera = () => {
         html5QrCode
@@ -250,55 +303,6 @@ document.addEventListener("DOMContentLoaded", () => {
             feedback.style.color = "red";
         });
     };
-
-    // Funktion för att exportera gästlistan som CSV med Purchased Time och Scanned Time
-    const exportGuestListToCSV = () => {
-    const apiUrl = "https://stripewebhook-function.azurewebsites.net/api/GetScannedGuests?code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==";
-
-        fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            // Skapa CSV-huvud med kolumnnamn
-            let csvContent = "Name,Status,Purchased Time,Scanned Time\n";
-
-            // Loopa igenom gästerna och skapa CSV-rader
-            data.forEach(guest => {
-                // Konvertera ScannedTime och PurchasedTime till lokal tid
-                const purchasedTime = new Date(guest.Date + 'Z').toLocaleString("sv-SE", {
-                    timeZone: "Europe/Stockholm"
-                });
-                const scannedTime = new Date(guest.ScannedTime + 'Z').toLocaleString("sv-SE", {
-                    timeZone: "Europe/Stockholm"
-                });
-
-                // Lägg till data i CSV-innehållet
-                csvContent += `"${guest.Name}","${guest.Status}","${purchasedTime}","${scannedTime}"\n`;
-            });
-
-            // Skapa en "data URL" direkt i minnet
-            const encodedUri = "data:text/csv;charset=utf-8," + encodeURIComponent(csvContent);
-
-            // Skapa en temporär länk för nedladdning
-            const link = document.createElement("a");
-            link.href = encodedUri;
-            link.setAttribute("download", "guest_list.csv");
-
-            // Lägg till länken temporärt i DOM och klicka på den
-            document.body.appendChild(link);
-            link.click();
-
-            // Ta bort länken efter nedladdningen
-            document.body.removeChild(link);
-        })
-        .catch(error => {
-            console.error("Fel vid export av gästlistan:", error);
-            feedback.textContent = "Kunde inte exportera gästlistan.";
-            feedback.style.color = "red";
-        });
-    };
-
-    // Koppla export-knappen till funktionen
-    exportHistoryButton.addEventListener("click", exportGuestListToCSV);
 
     fetchScannedGuests();
 });
