@@ -7,7 +7,6 @@ document.querySelector('.ticket-form').addEventListener('submit', async (event) 
     const instructions = document.querySelector('.instructions');
     const form = document.querySelector('.ticket-form');
     const ticketTitle = document.querySelector('h1');  // Rubriken "Retrieve Your Ticket"
-    const tryAgainButton = document.createElement('button');
 
     // Döljer instruktioner, formulär och rubrik
     instructions.style.display = 'none';
@@ -50,6 +49,7 @@ document.querySelector('.ticket-form').addEventListener('submit', async (event) 
         resultDiv.appendChild(errorMessage);
 
         // Skapa och visa knappen "Try Again"
+        const tryAgainButton = document.createElement('button');
         tryAgainButton.textContent = 'Try Again';
         tryAgainButton.classList.add('try-again-button');
         resultDiv.appendChild(tryAgainButton);
