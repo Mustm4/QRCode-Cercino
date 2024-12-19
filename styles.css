@@ -8,7 +8,7 @@
 /* Ny wrapper för bakgrund */
 .background-container {
     position: fixed; /* Fixera bakgrunden så att den alltid är längst bak */
-    top: 0;
+    top: 80px;
     left: 0;
     width: 100%;
     height: 100%; /* Täck hela höjden */
@@ -150,7 +150,7 @@ body {
     background-color: black;
     padding: 1rem 2rem;
     position: relative; /* Behåller navbaren i flödet */
-    z-index: 2; /* Se till att navbaren ligger ovanför kameran */
+    z-index: 10; /* Se till att navbaren ligger ovanför kameran */
 }
 
 .navbar .logo img {
