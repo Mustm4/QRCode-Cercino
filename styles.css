@@ -477,7 +477,7 @@ button[style="display: none;"] {
     max-width: 600px;      /* Begränsa bredden för stora skärmar */
     background-color: hsl(329.1, 84%, 69.02%);
     padding: 15px;
-    margin-bottom: 15%;
+    margin-bottom: 20%;
 }
 
 #guest-list-container h3 {
