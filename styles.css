@@ -5,28 +5,60 @@
     box-sizing: border-box;
 }
 
-/* Body Styling */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #121212;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 1)), url('party.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
+/* Ny wrapper för bakgrund */
+.background-container {
+    position: fixed; /* Fixera bakgrunden så att den alltid är längst bak */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; /* Täck hela höjden */
+    background-image: url('bakgrundnr2.jpg');
     background-position: center;
-    color: black;
-    display: block;
-    flex-direction: column;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-    padding-bottom: 80px;
+    background-size: 150%;
+    z-index: -2; /* Placera bakgrunden under allt annat */
 }
 
-/* Responsive Design */
+.background-container::before {
+    content: ''; /* Pseudo-element för att visa bilden */
+    position: absolute;
+    bottom: 0; /* Flytta bakgrunden till botten */
+    left: 0;
+    width: 100%;
+    height: 70%; /* Justera höjden till 30% om du vill ha en kortare bild, eller 100% för att täcka hela botten */
+    background-image: url('fågel.png');
+    background-repeat: no-repeat;
+    background-size: contain; /* Bevara proportioner */
+    background-position: center bottom; /* Placera bilden längst ner */
+    z-index: -1; /* Säkerställ att det hamnar under innehållet */
+}
+
+
+
+/* För att fylla resterande 30% med svart */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: transparent;  /* Svart för resterande del */
+}
+
+.content-container {
+    position: relative; /* Innehåll över bakgrunden */
+    z-index: 1; /* Placera ovanpå bakgrunden */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Täck hela höjden */
+}
+
+
 @media (max-width: 768px) {
     body {
-        background-size: cover; 
-        background-position: center;
+        background-size: cover; /* Gör att bilden täcker skärmen */
+        background-position: center; /* Centrera bilden */
+    }
+
+    .background-container::before {
+        background-size: cover; /* Anpassa bakgrunden för små skärmar */
+        background-position: center; /* Centrera på små skärmar */
     }
 
     .main-content {
@@ -34,7 +66,7 @@ body {
         justify-content: center;
         align-items: center;
         flex-grow: 1;
-        padding: 2rem; /* Reduced padding */
+        padding: 2rem; /* Reducerad padding */
         text-align: center;
     }
 
@@ -55,7 +87,7 @@ body {
     .ticket-container p {
         font-size: 1rem;
         margin-bottom: 1rem;
-        color: #cccccc;
+        color: #ffffff;
     }
 
     #reader {
@@ -65,9 +97,10 @@ body {
 
     button {
         width: 100%;
-        padding: 1rem;  /* Adjust button size for smaller screens */
+        padding: 1rem; /* Anpassa knappstorleken för mindre skärmar */
     }
 }
+
 
 @media (max-width: 480px) {
     body {
@@ -100,7 +133,7 @@ body {
     .ticket-container p {
         font-size: 0.9rem; /* Smaller font size */
         margin-bottom: 1rem;
-        color: #cccccc;
+        color: #ffffff;
     }
 
     #reader {
@@ -120,12 +153,10 @@ body {
     z-index: 10; /* Se till att navbaren ligger ovanför kameran */
 }
 
-.navbar .logo a {
-    text-decoration: none;
-    color: #ffffff;
-    font-size: 1.7rem;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-weight: 400;
+.navbar .logo img {
+    height: 50px; /* Sätt en passande höjd för logotypen */
+    width: auto;  /* Bevara proportioner på logotypen */
+    display: block;
 }
 
 .nav-links a {
@@ -169,6 +200,7 @@ p {
 button {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
+    width: 100%;
     color: #ffffff;
     background-color: hsl(329.1, 84%, 69.02%);
     border: none;
@@ -360,11 +392,12 @@ button[style="display: none;"] {
 /* Main content */
 .main-content {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    color: #ffffff;
     flex-direction: column;
+    justify-content: flex-start; /* Placera allt högst upp */
+    align-items: center; /* Behåll centrering horisontellt */
+    min-height: 70vh; /* Se till att sidan täcker hela höjden */
+    padding-top: 0px; /* Eventuellt lägga till lite mellanrum högst upp */
+    color: #ffffff;
 }
 
 .ticket-container {
@@ -375,10 +408,11 @@ button[style="display: none;"] {
     max-width: 400px;
     position: relative;
     z-index: 5;
+    margin-top: 0;
 }
 
 .ticket-container h1 {
-    font-size: 2rem;
+    font-size: 1.8rem;
     margin-bottom: 1rem;
     color: #ffffff;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -386,11 +420,15 @@ button[style="display: none;"] {
 }
 
 .ticket-container p {
-    font-size: 1rem;
+    font-size: 0.9rem;
     margin-bottom: 1rem;
-    color: #cccccc;
+    color: #ffffff;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-weight: 400;
+    font-weight: 600;
+    max-width: 60%;
+    margin-left: auto;
+    margin-right: auto; /* Centrerar p */
+    text-align: center;
 
 }
 
