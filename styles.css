@@ -367,6 +367,7 @@ button[style="display: none;"] {
     color: red;
     margin-bottom: 20px;  /* Lägg till mellanrum under felmeddelandet */
     text-align: center;
+    background-color: rgba(255, 0, 0, 0.1);
 }
 
 /* Stil för "Try Again"-knappen */
@@ -374,14 +375,11 @@ button[style="display: none;"] {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
     color: black;
-    font-weight: 600;
     background-color: hsl(329.1, 84%, 69.02%);
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    display: block;
-    margin: 0 auto; /* Centrera knappen */
+    margin-top: 10px;
 }
 
 .try-again-button:hover {
