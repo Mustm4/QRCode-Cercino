@@ -14,7 +14,7 @@
     height: 100%; /* Täck hela höjden */
     background-image: url('bakgrundnr2.jpg');
     background-position: center;
-    background-size: 200%;
+    background-size: 150%;
     z-index: -2; /* Placera bakgrunden under allt annat */
 }
 
@@ -391,7 +391,7 @@ button[style="display: none;"] {
 
 /* Main content */
 .main-content {
-    display: flex;
+    display: fixed;
     flex-direction: column;
     justify-content: flex-start; /* Placera allt högst upp */
     align-items: center; /* Behåll centrering horisontellt */
