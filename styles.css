@@ -396,7 +396,7 @@ button[style="display: none;"] {
     justify-content: flex-start; /* Placera allt högst upp */
     align-items: center; /* Behåll centrering horisontellt */
     min-height: 70vh; /* Se till att sidan täcker hela höjden */
-    padding-top: 0px; /* Eventuellt lägga till lite mellanrum högst upp */
+    padding-top: 15%; /* Eventuellt lägga till lite mellanrum högst upp */
     color: #ffffff;
 }
 
