@@ -172,8 +172,14 @@ body {
 
 /* Footer */
 .footer {
-    text-align: center;  /* Centrerar texten horisontellt */
-    padding: 20px;  /* Lägger till lite mellanrum runt om */
+    position: fixed; /* Fixera footern längst ner på sidan */
+    bottom: 0; /* Placera footern längst ner */
+    left: 0;
+    width: 100%; /* Se till att footern täcker hela bredden */
+    text-align: center; /* Centrerar texten horisontellt */
+    padding: 20px; /* Lägger till lite mellanrum runt om */
+    color: #ffffff; /* Sätt textfärgen till vit */
+    z-index: 100; /* Se till att footern ligger ovanpå andra element */
 }
 
 p {
@@ -391,14 +397,18 @@ button[style="display: none;"] {
 
 /* Main content */
 .main-content {
-    display: fixed;
+    position: fixed;  /* Gör så att innehållet stannar på samma plats på skärmen */
+    top: 10vh; /* Förskjut innehållet något ned från toppen för att ge plats åt navbaren */
+    left: 0;
+    width: 100%;
+    min-height: 70vh; /* Se till att det täcker en viss del av skärmen */
+    display: flex;
     flex-direction: column;
     justify-content: flex-start; /* Placera allt högst upp */
-    align-items: center; /* Behåll centrering horisontellt */
-    min-height: 70vh; /* Se till att sidan täcker hela höjden */
-    padding-top: 15%; /* Eventuellt lägga till lite mellanrum högst upp */
+    align-items: center; /* Centrera horisontellt */
     color: #ffffff;
-}
+    padding-top: 0; /* Ingen extra padding här nu eftersom vi justerar top */
+    z-index: 1; /* Se till att det ligger ovanpå bakgrunden */
 
 .ticket-container {
     padding: 2rem;
