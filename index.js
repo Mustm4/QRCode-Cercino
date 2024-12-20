@@ -15,7 +15,7 @@ document.querySelector('.ticket-form').addEventListener('submit', async (event) 
     resultDiv.innerHTML = '';  // Tömmer resultatdiven för att visa nya element
 
     try {
-        const response = await fetch(`https://stripewebhook-function.azurewebsites.net/api/GetQRCodeImage?orderId=${orderId}`, {
+        const response = await fetch(`https://stripewebhook-function.azurewebsites.net/api/GetQRCodeImageByOrderId?orderId=${orderId}`, {
             cache: 'no-store', // För att undvika cache-problem
         });
 
