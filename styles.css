@@ -371,10 +371,11 @@ button[style="display: none;"] {
 }
 
 .error-message {
-    font-size: 1.2rem;
-    font-weight: 600;
+    font-size: 1.5rem;
+    font-weight: bolder;
     color: red;
     margin-bottom: 20px;  /* Lägg till mellanrum under felmeddelandet */
+    margin-top: 20vh;
     text-align: center;
 }
 
