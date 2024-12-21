@@ -536,7 +536,6 @@ button[style="display: none;"] {
     justify-content: center;
     text-align: center;
     margin-top: 20px;
-    animation: glow 1.5s infinite ease-in-out;
     background-color: none; /* Ta bort bakgrundsfärgen här också om det behövs */
     border: none; /* Ta bort bordern här också om det behövs */
     border-radius: 15px;
@@ -550,7 +549,6 @@ button[style="display: none;"] {
     border-radius: 15px;
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
     margin: 0 auto;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 #qr-code-result img:hover {
@@ -572,20 +570,6 @@ button[style="display: none;"] {
     color: black; /* Anpassa textfärgen */
     margin: 10px 0;
     font-weight: bold;
-}
-
-
-/* Animation för fade-in */
-@keyframes glow {
-    0% {
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-    }
-    50% {
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-    }
-    100% {
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-    }
 }
 
 .ticket-form, .instructions {
