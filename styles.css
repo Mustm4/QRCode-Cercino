@@ -537,7 +537,7 @@ button[style="display: none;"] {
     text-align: center;
     margin-top: 20px;
     animation: glow 1.5s infinite ease-in-out;
-    background-color: hsl(329.1, 84%, 69.02%);
+    background-color: none; /* Ta bort bakgrundsfärgen här också om det behövs */
     border: none; /* Ta bort bordern här också om det behövs */
     border-radius: 15px;
 }
