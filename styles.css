@@ -539,14 +539,23 @@ button[style="display: none;"] {
 }
 
 #qr-code-result img {
-    max-width: 100%; /* Justera storleken på QR-koden */
+    max-width: 100%;
     height: auto;
     display: block;
-    background-color: black; /* Svart bakgrund runt QR-koden */
-    padding: 40px; /* Utrymme runt QR-koden för att skapa kontrast */
-    border-radius: 10px; /* Rundade hörn för design */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Skugga för djup */
+    background-color: black;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     margin: 0 auto;
+}
+
+#qr-code-result .qr-info {
+    margin-top: 10px; /* Lite mellanrum mellan QR-koden och texten */
+    color: white; /* Vit textfärg */
+    font-size: 16px; /* Justera storlek efter behov */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
+    text-align: center; /* Centrera texten */
 }
 
 .ticket-form, .instructions {
