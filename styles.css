@@ -549,6 +549,17 @@ button[style="display: none;"] {
     margin: 0 auto;
 }
 
+#qr-code-result p {
+    max-width: 100%; /* Justera storleken på QR-koden */
+    height: auto;
+    display: block;
+    background-color: black; /* Svart bakgrund runt QR-koden */
+    padding: 40px; /* Utrymme runt QR-koden för att skapa kontrast */
+    border-radius: 10px; /* Rundade hörn för design */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Skugga för djup */
+    margin: 0 auto;
+}
+
 .ticket-form, .instructions {
     position: relative;
     z-index: 20;
