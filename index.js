@@ -54,33 +54,34 @@ document.querySelector('.ticket-form').addEventListener('submit', function (even
             })
             
 
-    // Function to show an error message and try again button
-    function showError() {
-    const resultDiv = document.getElementById('qr-code-result');
+        // Function to show an error message and try again button
+        function showError() {
+        const resultDiv = document.getElementById('qr-code-result');
 
-    // Ensure the resultDiv has no background if there's an error
-    resultDiv.style.backgroundColor = 'transparent';  // Make sure the background is transparent
+        // Ensure the resultDiv has no background if there's an error
+        resultDiv.style.backgroundColor = 'transparent';  // Make sure the background is transparent
 
-    // Show error message
-    const errorMessage = document.createElement('div');
-    errorMessage.classList.add('error-message');
-    errorMessage.textContent = 'INVALID ORDER ID. PLEASE TRY AGAIN.';
-    resultDiv.appendChild(errorMessage);
+        // Show error message
+        const errorMessage = document.createElement('div');
+        errorMessage.classList.add('error-message');
+        errorMessage.textContent = 'INVALID ORDER ID. PLEASE TRY AGAIN.';
+        resultDiv.appendChild(errorMessage);
 
-    // Show try again button
-    const tryAgainButton = document.createElement('button');
-    tryAgainButton.textContent = 'Try Again';
-    tryAgainButton.classList.add('try-again-button');
-    resultDiv.appendChild(tryAgainButton);
+        // Show try again button
+        const tryAgainButton = document.createElement('button');
+        tryAgainButton.textContent = 'Try Again';
+        tryAgainButton.classList.add('try-again-button');
+        resultDiv.appendChild(tryAgainButton);
 
-    // Add event listener to reset the form
-    tryAgainButton.addEventListener('click', () => {
+        // Add event listener to reset the form
+        tryAgainButton.addEventListener('click', () => {
         document.querySelector('.ticket-form').style.display = 'block';
         document.querySelector('.instructions').style.display = 'block';
         document.querySelector('h1').style.display = 'block';  // Show the heading again
         resultDiv.style.display = 'none';
         resultDiv.innerHTML = '';  // Clear previous content
-    });
-    }
+        });
+    };
+}
 
 });
