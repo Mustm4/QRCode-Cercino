@@ -372,20 +372,23 @@ button[style="display: none;"] {
 }
 
 .error-message {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: bold;
     color: #ff4d4d; /* Röd färg för att indikera fel */
     background-color: black; /* Svart bakgrund för kontrast */
     padding: 10px;
     border-radius: 5px;
-    margin-bottom: 20px;
+    margin-bottom: 60px;
+    margin-top: 30%;
     text-align: center;
 }
 
 /* Stil för "Try Again"-knappen */
 .try-again-button {
     padding: 0.75rem 1.5rem;
-    font-size: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: black;
     background-color: hsl(329.1, 84%, 69.02%);
     border: none;
