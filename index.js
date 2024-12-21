@@ -5,9 +5,10 @@ document.querySelector('.ticket-form').addEventListener('submit', function (even
 
     // Check if Order ID is provided
     if (orderId) {
-        // Hide the form and instructions
+        // Hide the form, instructions, and heading
         document.querySelector('.ticket-form').style.display = 'none';
         document.querySelector('.instructions').style.display = 'none';
+        document.querySelector('h1').style.display = 'none';  // Hide the heading
 
         // Show the QR code result container
         const qrResultContainer = document.getElementById('qr-code-result');
@@ -75,6 +76,7 @@ document.querySelector('.ticket-form').addEventListener('submit', function (even
         tryAgainButton.addEventListener('click', () => {
             document.querySelector('.ticket-form').style.display = 'block';
             document.querySelector('.instructions').style.display = 'block';
+            document.querySelector('h1').style.display = 'block';  // Show the heading again
             resultDiv.style.display = 'none';
             resultDiv.innerHTML = '';  // Clear previous content
         });
