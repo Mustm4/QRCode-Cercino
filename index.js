@@ -12,8 +12,15 @@ document.querySelector('.ticket-form').addEventListener('submit', function (even
 
     // Kontrollera om Order ID är korrekt
     if (orderId && mockData.id === orderId) {
-        // Rensa tidigare QR-kod och innehåll
+        // Dölj formuläret och instruktioner
+        document.querySelector('.ticket-form').style.display = 'none';
+        document.querySelector('.instructions').style.display = 'none';
+
+        // Visa QR-kod-resultatet
         const qrResultContainer = document.getElementById('qr-code-result');
+        qrResultContainer.style.display = 'flex'; // Gör QR-resultatet synligt
+
+        // Rensa tidigare QR-kod och innehåll
         qrResultContainer.innerHTML = '';
 
         // Skapa och visa namnet på kunden
@@ -37,13 +44,11 @@ document.querySelector('.ticket-form').addEventListener('submit', function (even
         quantityText.style.marginTop = '10px';
         qrResultContainer.appendChild(quantityText);
 
-        // Visa resultatcontainern
-        qrResultContainer.style.display = 'flex';
-        qrResultContainer.style.flexDirection = 'column';
-        qrResultContainer.style.alignItems = 'center';
     } else {
-        alert('Invalid Order ID. Please try again.');
+        console.error('Error response:', response.status, response.statusText);
+        showError();
     }
+
 
     // Funktion som hanterar visningen av felmeddelandet och knappen
     function showError() {
