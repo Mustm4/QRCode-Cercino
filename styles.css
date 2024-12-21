@@ -560,12 +560,20 @@ button[style="display: none;"] {
 
 #qr-code-result p {
     font-size: 1rem; /* Justera textstorlek */
-    color: #ffffff; /* Gör texten vit för kontrast */
+    color: black; /* Gör texten vit för kontrast */
     margin-top: 10px;
     width: 100%; /* Begränsa bredden */
     max-width: 500px; /* Maxbredd */
     text-align: center;
 }
+
+#customer-name, #quantity {
+    font-size: 1rem;
+    color: black; /* Anpassa textfärgen */
+    margin: 10px 0;
+    font-weight: bold;
+}
+
 
 /* Animation för fade-in */
 @keyframes glow {
