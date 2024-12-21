@@ -536,28 +536,49 @@ button[style="display: none;"] {
     justify-content: center;
     text-align: center;
     margin-top: 20px;
+    animation: fadeIn 1s ease-in-out;
 }
 
 #qr-code-result img {
-    max-width: 100%; /* Justera storleken på QR-koden */
+    max-width: 100%; /* Gör QR-koden responsiv */
     height: auto;
     display: block;
-    background-color: black; /* Svart bakgrund runt QR-koden */
-    padding: 40px; /* Utrymme runt QR-koden för att skapa kontrast */
-    border-radius: 10px; /* Rundade hörn för design */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Skugga för djup */
+    background: linear-gradient(145deg, #1a1a1a, #333333); /* Gradient bakgrund */
+    padding: 20px; /* Mindre padding för modern design */
+    border-radius: 15px; /* Rundare hörn */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4); /* Mjukare skugga */
     margin: 0 auto;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Lägg till transitioner */
+}
+
+#qr-code-result img:hover {
+    transform: scale(1.05); /* Enkel zoom vid hover */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Större skugga vid hover */
 }
 
 #qr-code-result p {
-    max-width: 100%; /* Justera storleken på QR-koden */
-    height: auto;
-    display: block;
-    background-color: black; /* Svart bakgrund runt QR-koden */
-    padding: 40px; /* Utrymme runt QR-koden för att skapa kontrast */
-    border-radius: 10px; /* Rundade hörn för design */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Skugga för djup */
-    margin: 0 auto;
+    font-size: 1rem; /* Justera textstorlek */
+    color: #ffffff; /* Gör texten vit för kontrast */
+    background: rgba(0, 0, 0, 0.8); /* Semitransparent bakgrund */
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 15px;
+    width: 80%; /* Begränsa bredden */
+    max-width: 500px; /* Maxbredd */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Skugga */
+    text-align: center;
+}
+
+/* Animation för fade-in */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .ticket-form, .instructions {
