@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let isCameraActive = true;
     let scannedCodes = new Set(); // To store unique scanned QR codes
     let isScanningCompleted = false; // Flag to check if scanning is completed
-    let currentPaymentSessionId = null; // To store the current payment session ID
+    let currentOrderNumber = null; // To store the current order number
     let isExporting = false;
 
     // Utility function to get current timestamp
@@ -127,8 +127,8 @@ exportHistoryButton.addEventListener("click", exportGuestListToCSV);
     };
 
     
-    const checkQRCodeStatus = (paymentSessionId) => {
-        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?paymentSessionId=${paymentSessionId}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
+    const checkQRCodeStatus = (orderNumber) => {
+        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?orderNumber=${orderNumber}`;
         fetch(apiUrl)
         .then(response => response.json())
             .then(data => {
@@ -151,8 +151,8 @@ exportHistoryButton.addEventListener("click", exportGuestListToCSV);
                     }
                 // Show the accept button
                 acceptButton.style.display = "inline-block";
-                // Save the current payment session ID
-                currentPaymentSessionId = paymentSessionId;
+                // Save the current order number
+                currentOrderNumber = orderNumber;
                 // Mark scanning as completed
                 isScanningCompleted = true;
             })
@@ -211,19 +211,19 @@ exportHistoryButton.addEventListener("click", exportGuestListToCSV);
     });
     // Handle the "Släpp In" button click
     acceptButton.addEventListener("click", () => {
-        // Make sure the paymentSessionId is available before sending the request
-        if (!currentPaymentSessionId) {
+        // Make sure the order number is available before sending the request
+        if (!currentOrderNumber) {
             feedback.textContent = "Ingen QR-kod skannad.";
             feedback.style.color = "red";
             return;
         }
         // Make the API call to update the QR code status
-        updateQRCodeStatus(currentPaymentSessionId, "Redan skannad").then(() => {
+        updateQRCodeStatus(currentOrderNumber, "Redan skannad").then(() => {
             fetchScannedGuests();
         });
     });
-    const updateQRCodeStatus = (paymentSessionId, status) => {
-        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/UpdateQRCodeStatus?paymentSessionId=${paymentSessionId}&status=${status}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
+    const updateQRCodeStatus = (orderNumber, status) => {
+        const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/UpdateQRCodeStatus?orderNumber=${orderNumber}&status=${status}&code=obq3ySEnhcFbiDIK0H1uAoE2tksc-yL4aoPdLE3AS96wAzFuSC57-w==`;
 
         return fetch(apiUrl, { // Returnera Promise från fetch
             method: 'POST',
