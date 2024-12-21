@@ -537,13 +537,14 @@ button[style="display: none;"] {
     text-align: center;
     margin-top: 20px;
     animation: fadeIn 1s ease-in-out;
+    background-color: black;
+    border-radius: 15px; /* Rundare hörn */
 }
 
 #qr-code-result img {
     max-width: 100%; /* Gör QR-koden responsiv */
     height: auto;
     display: block;
-    background: linear-gradient(145deg, #1a1a1a, #333333); /* Gradient bakgrund */
     padding: 20px; /* Mindre padding för modern design */
     border-radius: 15px; /* Rundare hörn */
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4); /* Mjukare skugga */
@@ -559,8 +560,6 @@ button[style="display: none;"] {
 #qr-code-result p {
     font-size: 1rem; /* Justera textstorlek */
     color: #ffffff; /* Gör texten vit för kontrast */
-    background: rgba(0, 0, 0, 0.8); /* Semitransparent bakgrund */
-    padding: 15px;
     border-radius: 10px;
     margin-top: 15px;
     width: 80%; /* Begränsa bredden */
