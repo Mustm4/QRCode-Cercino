@@ -561,11 +561,9 @@ button[style="display: none;"] {
 #qr-code-result p {
     font-size: 1rem; /* Justera textstorlek */
     color: #ffffff; /* Gör texten vit för kontrast */
-    border-radius: 10px;
-    margin-top: 15px;
-    width: 80%; /* Begränsa bredden */
+    margin-top: 10px;
+    width: 100%; /* Begränsa bredden */
     max-width: 500px; /* Maxbredd */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Skugga */
     text-align: center;
 }
 
