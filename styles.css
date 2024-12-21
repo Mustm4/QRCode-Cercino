@@ -70,6 +70,11 @@ body {
         text-align: center;
     }
 
+    #qr-code-result img {
+        max-width: 90%; /* Gör QR-koden större på mindre skärmar */
+        padding: 10px;
+    }
+    
     .ticket-container {
         padding: 2rem;
         border-radius: 10px;
@@ -372,11 +377,13 @@ button[style="display: none;"] {
 }
 
 .error-message {
-    font-size: 1.5rem;
-    font-weight: bolder;
-    color: red;
-    margin-bottom: 20px;  /* Lägg till mellanrum under felmeddelandet */
-    margin-top: 20vh;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ff4d4d; /* Röd färg för att indikera fel */
+    background-color: black; /* Svart bakgrund för kontrast */
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
     text-align: center;
 }
 
@@ -526,18 +533,22 @@ button[style="display: none;"] {
 /* När QR-koden visas, se till att visa resultatet i mitten */
 #qr-code-result {
     display: flex;
-    flex-direction: column;  /* Stapla felmeddelandet och knappen vertikalt */
-    align-items: center;     /* Centrera horisontellt */
-    justify-content: center; /* Centrera vertikalt */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    margin-top: 20px;        /* Lägg till avstånd från andra element */
+    margin-top: 20px;
 }
 
 #qr-code-result img {
-    max-width: 100%;
-    height: auto; /* Bevara bildens proportioner */
-    display: block; /* Ta bort extra mellanrum under bilden */
-    margin: 0 auto; /* Centrera bilden */
+    max-width: 80%; /* Justera storleken på QR-koden */
+    height: auto;
+    display: block;
+    background-color: black; /* Svart bakgrund runt QR-koden */
+    padding: 20px; /* Utrymme runt QR-koden för att skapa kontrast */
+    border-radius: 10px; /* Rundade hörn för design */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Skugga för djup */
+    margin: 0 auto;
 }
 
 .ticket-form, .instructions {
