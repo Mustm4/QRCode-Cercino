@@ -130,29 +130,37 @@ exportHistoryButton.addEventListener("click", exportGuestListToCSV);
     const checkQRCodeStatus = (orderNumber) => {
         const apiUrl = `https://stripewebhook-function.azurewebsites.net/api/CheckQRCodeStatus?orderNumber=${orderNumber}`;
         fetch(apiUrl)
-        .then(response => response.json())
+            .then(response => response.json())
             .then(data => {
                 console.log(data);
+    
                 // Update name and status
                 scannedName.textContent = data.name || "Unknown";
                 scannedStatus.textContent = data.status;
-                const scannedTime = data.ScannedTime || !"N/A";
-
+                
+                const scannedTime = data.ScannedTime || "N/A";
+    
+                // Visa endast tid om den är tillgänglig
+                if (scannedTime !== "N/A") {
+                    scannedStatus.textContent += ` (Skannades: ${scannedTime})`;
+                }
+    
                 // Show name, status & time
                 nameStatusContainer.style.display = "block";
-                scannedStatus.textContent += scannedTime !== "N/A" ? ` (Skannades: ${scannedTime})` : "";
-
-                if (data.status === "Redan skannad") 
-                    {
-                        feedback.textContent = "Redan skannad eller skanning slutförd.";
-                        feedback.style.color = "orange";
-                        acceptButton.style.display = "none";
-                        return;
-                    }
+    
+                if (data.status === "Redan skannad") {
+                    feedback.textContent = "Redan skannad eller skanning slutförd.";
+                    feedback.style.color = "orange";
+                    acceptButton.style.display = "none";
+                    return;
+                }
+    
                 // Show the accept button
                 acceptButton.style.display = "inline-block";
+    
                 // Save the current order number
                 currentOrderNumber = orderNumber;
+    
                 // Mark scanning as completed
                 isScanningCompleted = true;
             })
@@ -162,6 +170,7 @@ exportHistoryButton.addEventListener("click", exportGuestListToCSV);
                 feedback.style.color = "red";
             });
     };
+    
 
 
     // Stop the camera
