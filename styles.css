@@ -70,11 +70,6 @@ body {
         text-align: center;
     }
 
-    #qr-code-result img {
-        max-width: 90%; /* Gör QR-koden större på mindre skärmar */
-        padding: 10px;
-    }
-    
     .ticket-container {
         padding: 2rem;
         border-radius: 10px;
@@ -541,11 +536,11 @@ button[style="display: none;"] {
 }
 
 #qr-code-result img {
-    max-width: 80%; /* Justera storleken på QR-koden */
+    max-width: 90%; /* Justera storleken på QR-koden */
     height: auto;
     display: block;
     background-color: black; /* Svart bakgrund runt QR-koden */
-    padding: 20px; /* Utrymme runt QR-koden för att skapa kontrast */
+    padding: 40px; /* Utrymme runt QR-koden för att skapa kontrast */
     border-radius: 10px; /* Rundade hörn för design */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Skugga för djup */
     margin: 0 auto;
