@@ -44,9 +44,6 @@ document.querySelector('.ticket-form').addEventListener('submit', function (even
     } else {
         alert('Invalid Order ID. Please try again.');
     }
-});
-
-    
 
     // Funktion som hanterar visningen av felmeddelandet och knappen
     function showError() {
