@@ -55,12 +55,13 @@ document.querySelector('.ticket-form').addEventListener('submit', function (even
             
 
         // Function to show an error message and try again button
+        // Function to show an error message and try again button
         function showError() {
         const resultDiv = document.getElementById('qr-code-result');
 
-        // Ensure the resultDiv has no background if there's an error
-        resultDiv.style.backgroundColor = 'transparent';  // Make sure the background is transparent
-
+        // Remove the border from qr code result if any
+        resultDiv.style.border = 'none';  // Detta tar bort bordern
+    
         // Show error message
         const errorMessage = document.createElement('div');
         errorMessage.classList.add('error-message');
@@ -81,7 +82,8 @@ document.querySelector('.ticket-form').addEventListener('submit', function (even
         resultDiv.style.display = 'none';
         resultDiv.innerHTML = '';  // Clear previous content
         });
-    };
+    }
+
 }
 
 });
