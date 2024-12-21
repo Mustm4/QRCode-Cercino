@@ -536,8 +536,9 @@ button[style="display: none;"] {
     justify-content: center;
     text-align: center;
     margin-top: 20px;
-    animation: fadeIn 1s ease-in-out;
-    background-color: black;
+    animation: glow 1.5s infinite ease-in-out;
+    border: 2px solid rgba(255, 255, 255, 0.5); /* Förstärker glödeffekten */
+    background-color: hsl(329.1, 84%, 69.02%);
     border-radius: 15px; /* Rundare hörn */
 }
 
@@ -569,14 +570,15 @@ button[style="display: none;"] {
 }
 
 /* Animation för fade-in */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    50% {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+    }
+    100% {
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     }
 }
 
