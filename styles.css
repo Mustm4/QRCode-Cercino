@@ -536,7 +536,7 @@ button[style="display: none;"] {
 }
 
 #qr-code-result img {
-    max-width: 90%; /* Justera storleken på QR-koden */
+    max-width: 100%; /* Justera storleken på QR-koden */
     height: auto;
     display: block;
     background-color: black; /* Svart bakgrund runt QR-koden */
