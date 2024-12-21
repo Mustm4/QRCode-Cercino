@@ -23,6 +23,10 @@ document.querySelector('.ticket-form').addEventListener('submit', function (even
             .then(data => {
                 // Check if the response has the necessary data
                 if (data.imageUrl) {
+                    // Set background color only when QR code is shown
+                    const qrResultContainer = document.getElementById('qr-code-result');
+                    qrResultContainer.style.backgroundColor = 'hsl(329.1, 84%, 69.02%)'; // Set the background color
+            
                     // Display the customer name
                     const customerName = document.createElement('p');
                     customerName.textContent = data.name || 'Okänd';
@@ -30,13 +34,13 @@ document.querySelector('.ticket-form').addEventListener('submit', function (even
                     customerName.style.fontWeight = 'bold';
                     customerName.style.marginBottom = '10px';
                     qrResultContainer.appendChild(customerName);
-
+            
                     // Display the QR code image
                     const qrCode = document.createElement('img');
                     qrCode.src = data.imageUrl;
                     qrCode.alt = 'QR Code';
                     qrResultContainer.appendChild(qrCode);
-
+            
                     // Display the quantity
                     const quantityText = document.createElement('p');
                     quantityText.textContent = `Quantity: ${data.quantity}`;
@@ -48,37 +52,35 @@ document.querySelector('.ticket-form').addEventListener('submit', function (even
                     showError();
                 }
             })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                showError();
-            });
-    } else {
-        showError();
-    }
+            
 
     // Function to show an error message and try again button
     function showError() {
-        const resultDiv = document.getElementById('qr-code-result');
+    const resultDiv = document.getElementById('qr-code-result');
 
-        // Show error message
-        const errorMessage = document.createElement('div');
-        errorMessage.classList.add('error-message');
-        errorMessage.textContent = 'INVALID ORDER ID. PLEASE TRY AGAIN.';
-        resultDiv.appendChild(errorMessage);
+    // Ensure the resultDiv has no background if there's an error
+    resultDiv.style.backgroundColor = 'transparent';  // Make sure the background is transparent
 
-        // Show try again button
-        const tryAgainButton = document.createElement('button');
-        tryAgainButton.textContent = 'Try Again';
-        tryAgainButton.classList.add('try-again-button');
-        resultDiv.appendChild(tryAgainButton);
+    // Show error message
+    const errorMessage = document.createElement('div');
+    errorMessage.classList.add('error-message');
+    errorMessage.textContent = 'INVALID ORDER ID. PLEASE TRY AGAIN.';
+    resultDiv.appendChild(errorMessage);
 
-        // Add event listener to reset the form
-        tryAgainButton.addEventListener('click', () => {
-            document.querySelector('.ticket-form').style.display = 'block';
-            document.querySelector('.instructions').style.display = 'block';
-            document.querySelector('h1').style.display = 'block';  // Show the heading again
-            resultDiv.style.display = 'none';
-            resultDiv.innerHTML = '';  // Clear previous content
-        });
+    // Show try again button
+    const tryAgainButton = document.createElement('button');
+    tryAgainButton.textContent = 'Try Again';
+    tryAgainButton.classList.add('try-again-button');
+    resultDiv.appendChild(tryAgainButton);
+
+    // Add event listener to reset the form
+    tryAgainButton.addEventListener('click', () => {
+        document.querySelector('.ticket-form').style.display = 'block';
+        document.querySelector('.instructions').style.display = 'block';
+        document.querySelector('h1').style.display = 'block';  // Show the heading again
+        resultDiv.style.display = 'none';
+        resultDiv.innerHTML = '';  // Clear previous content
+    });
     }
+
 });
